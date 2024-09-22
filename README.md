@@ -38,7 +38,7 @@ Copyright © Sojung Park (Bei) All rights reserved.
 
 
 ## 🍀 Members
-| [![텍스트](https://avatars.githubusercontent.com/u/128218483?v=4)](https://github.com/sunsetdust) | [![텍스트](https://avatars.githubusercontent.com/u/164713708?v=4)](https://github.com/dlrtmxmflaqudwnsdl) | [![텍스트](https://avatars.githubusercontent.com/u/150216299?v=4)](https://github.com/thos0412) | [![텍스트](https://avatars.githubusercontent.com/u/111961655?v=4)](https://github.com/starshape7) |
+| [![텍스트](https://avatars.githubusercontent.com/u/128218483?v=4)](https://github.com/sunsetdust) | [![텍스트](https://avatars.githubusercontent.com/u/164713708?v=4)](https://github.com/dlrtmxmflaqudwnsdl) | [![텍스트](https://avatars.githubusercontent.com/u/150216299?v=4)](https://github.com/strfunctionk) | [![텍스트](https://avatars.githubusercontent.com/u/111961655?v=4)](https://github.com/starshape7) |
 |:---:|:---:|:---:|:---:|
 | 후니/권상훈 | 치멘/남병준 | 노코/박수현 | 잼/이재민 |
 
