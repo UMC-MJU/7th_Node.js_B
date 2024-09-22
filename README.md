@@ -1,6 +1,6 @@
-# 7th-Android
+# 7th-Node.js
 
-# 💚 UMC MJU 7th_Android
+# 💚 UMC MJU 7th_Node.js
 
 [UMC MJU 7th를 위한 깃허브 사용법 및 규칙](https://www.notion.so/makeus-challenge/UMC-MJU-GITHUB-RULE-b45c0d968a1a4fb789c67f3b0081ce17?pvs=4)
 
@@ -38,13 +38,9 @@ Copyright © Sojung Park (Bei) All rights reserved.
 
 
 ## 🍀 Members
-| [![텍스트](https://avatars.githubusercontent.com/u/128218483?v=4)](https://github.com/saojaem) | [![텍스트](https://avatars.githubusercontent.com/u/164713708?v=4)](https://github.com/L3416yst) | [![텍스트](https://avatars.githubusercontent.com/u/150216299?v=4)](https://github.com/thos0412) | [![텍스트](https://avatars.githubusercontent.com/u/111961655?v=4)](https://github.com/starshape7) |
+| [![텍스트](https://avatars.githubusercontent.com/u/128218483?v=4)](https://github.com/sunsetdust) | [![텍스트](https://avatars.githubusercontent.com/u/164713708?v=4)](https://github.com/dlrtmxmflaqudwnsdl) | [![텍스트](https://avatars.githubusercontent.com/u/150216299?v=4)](https://github.com/thos0412) | [![텍스트](https://avatars.githubusercontent.com/u/111961655?v=4)](https://github.com/starshape7) |
 |:---:|:---:|:---:|:---:|
-| 해리/박상재 | 윤슬/이윤서 | 주니/임준희 | 우연/추연우 |
-
-| [![텍스트](https://avatars.githubusercontent.com/u/113087916?v=4)](https://github.com/m01310g) | [![텍스트](https://avatars.githubusercontent.com/u/163288437?v=4)](https://github.com/eunsol1530) | [![텍스트](https://avatars.githubusercontent.com/u/155813460?v=4)](https://github.com/fredleeJH) |
-|:---:|:---:|:---:|
-| 도리/김민경 | 언스/김은솔 | 프레드/이종훈 |
+| 후니/권상훈 | 치멘/남병준 | 노코/박수현 | 잼/이재민 |
 
 <br>
 
