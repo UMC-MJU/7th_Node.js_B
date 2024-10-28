@@ -8,4 +8,5 @@ export const handleStoreAddition = async (req, res, next) => {
 
     const store = await storeAddition(bodyToStore(req.body));
     res.status(StatusCodes.OK).json({ result: store });
+    1
 };
