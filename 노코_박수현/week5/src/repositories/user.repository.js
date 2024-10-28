@@ -88,9 +88,9 @@ export const getUserPreferencesByUserId = async (userId) => {
 
     try {
         const [preferences] = await pool.query(
-            "SELECT ufc.id, ufc.category_id, ufc.member_id, fcl.name " +
-            "FROM member_prefer ufc JOIN food_category fcl on ufc.category_id = fcl.id " +
-            "WHERE ufc.member_id = ? ORDER BY ufc.category_id ASC;",
+            "SELECT mp.id, mp.category_id, mp.member_id, fc.name " +
+            "FROM member_prefer mp JOIN food_category fc on mp.category_id = fc.id " +
+            "WHERE mp.member_id = ? ORDER BY mp.category_id ASC;",
             userId
         );
 

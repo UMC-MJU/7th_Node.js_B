@@ -1,5 +1,5 @@
 export const bodyToUser = (body) => {
-    const birth = new Date(body.birth);
+    // const birth = new Date(body.birth);
 
     return {
         name: body.name,
@@ -11,10 +11,12 @@ export const bodyToUser = (body) => {
         status: body.status,
         email: body.email,
         point: body.point,
+        preferences: body.preferences,
     };
 };
-export const responseFromUser = (response) => {
+export const responseFromUser = (body) => {
     return {
-        user: response.user,
+        user: body.user,
+        preferences: body.preferences,
     };
 };

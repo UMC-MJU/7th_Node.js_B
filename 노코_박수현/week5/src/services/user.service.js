@@ -23,12 +23,16 @@ export const userSignUp = async (data) => {
         throw new Error("이미 존재하는 이메일입니다.");
     }
 
-    // for (const preference of data.preferences) {
-    //     await setPreference(joinUserId, preference);
-    // }
+    for (const preference of data.preferences) {
+        await setPreference(joinUserId, preference);
+    }
 
     const user = await getUser(joinUserId);
     const preferences = await getUserPreferencesByUserId(joinUserId);
 
-    return responseFromUser({ user, preferences });
+    return responseFromUser(
+        {
+            user,
+            preferences
+        });
 };
