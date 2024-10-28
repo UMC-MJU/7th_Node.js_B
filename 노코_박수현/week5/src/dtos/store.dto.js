@@ -29,7 +29,7 @@ export const bodyToReview = (body) => {
 
 export const responseFromStoreReview = (body) => {
     return {
-        store: body.store,
         review: body.review,
+        reviewImages: body.reviewImages,
     };
 };

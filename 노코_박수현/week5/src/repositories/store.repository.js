@@ -91,7 +91,7 @@ export const addReview = async (data) => {
             ]
         );
 
-        return [result.insertId, data.member_id, data.store_id];
+        return result.insertId;
     } catch (err) {
         throw new Error(
             `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`

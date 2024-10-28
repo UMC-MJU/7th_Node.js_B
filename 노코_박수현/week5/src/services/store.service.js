@@ -38,12 +38,12 @@ export const reviewAddition = async (data) => {
 
     });
 
-    if (additionReviewId[0] === null) {
+    if (additionReviewId === null) {
         throw new Error("가게가 존재하지 않습니다.");
     }
 
     for (const reviewImage of data.reviewImages) {
-        await setReviewImage(additionReviewId[1], additionReviewId[2], reviewImage);
+        await setReviewImage(additionReviewId, data.store_id, reviewImage);
     }
 
     const review = await getReview(additionReviewId);
@@ -52,6 +52,6 @@ export const reviewAddition = async (data) => {
     return responseFromStoreReview(
         {
             review,
-            reviewImages
+            reviewImages,
         });
 };
