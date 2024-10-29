@@ -1,11 +1,11 @@
 import { StatusCodes } from "http-status-codes";
 import {
     bodyToStore,
-    bodyToReview
+    bodyToStoreReview,
 } from "../dtos/store.dto.js";
 import {
     storeAddition,
-    reviewAddition
+    storeReviewAddition,
 } from "../services/store.service.js";
 
 export const handleStoreAddition = async (req, res, next) => {
@@ -16,11 +16,11 @@ export const handleStoreAddition = async (req, res, next) => {
     res.status(StatusCodes.OK).json({ result: store });
 };
 
-export const handleReviewAddition = async (req, res, next) => {
+export const handleStoreReviewAddition = async (req, res, next) => {
     console.log("가게에 리뷰 추가를 요청했습니다!");
     console.log("body:", req.body);
 
-    const store = await reviewAddition(bodyToReview(req.body));
+    const store = await storeReviewAddition(bodyToStoreReview(req.body));
     res.status(StatusCodes.OK).json({ result: store });
 };
 

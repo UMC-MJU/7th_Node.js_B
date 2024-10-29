@@ -6,10 +6,10 @@ import {
     addStore,
     getStore,
     getRegionByRegionId,
-    addReview,
-    getReview,
-    getReviewImageByReviewId,
-    setReviewImage,
+    addStoreReview,
+    getStoreReview,
+    getStoreReviewImageByReviewId,
+    setStoreReviewImage,
 } from "../repositories/store.repository.js";
 
 export const storeAddition = async (data) => {
@@ -29,8 +29,8 @@ export const storeAddition = async (data) => {
             storeRegion
         });
 };
-export const reviewAddition = async (data) => {
-    const additionReviewId = await addReview({
+export const storeReviewAddition = async (data) => {
+    const additionReviewId = await addStoreReview({
         member_id: data.member_id,
         store_id: data.store_id,
         body: data.body,
@@ -43,11 +43,11 @@ export const reviewAddition = async (data) => {
     }
 
     for (const reviewImage of data.reviewImages) {
-        await setReviewImage(additionReviewId, data.store_id, reviewImage);
+        await setStoreReviewImage(additionReviewId, data.store_id, reviewImage);
     }
 
-    const review = await getReview(additionReviewId);
-    const reviewImages = await getReviewImageByReviewId(additionReviewId);
+    const review = await getStoreReview(additionReviewId);
+    const reviewImages = await getStoreReviewImageByReviewId(additionReviewId);
 
     return responseFromStoreReview(
         {

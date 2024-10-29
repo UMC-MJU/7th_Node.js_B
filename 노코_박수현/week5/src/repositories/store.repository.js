@@ -68,7 +68,7 @@ export const getRegionByRegionId = async (regionId) => {
 };
 
 // 리뷰 데이터 삽입
-export const addReview = async (data) => {
+export const addStoreReview = async (data) => {
     const conn = await pool.getConnection();
 
     try {
@@ -102,7 +102,7 @@ export const addReview = async (data) => {
 };
 
 // 리뷰 정보 얻기
-export const getReview = async (reviewId) => {
+export const getStoreReview = async (reviewId) => {
     const conn = await pool.getConnection();
 
     try {
@@ -125,7 +125,7 @@ export const getReview = async (reviewId) => {
 };
 
 // 리뷰 이미지 매핑
-export const setReviewImage = async (review_id, store_id, image_url) => {
+export const setStoreReviewImage = async (review_id, store_id, image_url) => {
     const conn = await pool.getConnection();
 
     try {
@@ -145,7 +145,7 @@ export const setReviewImage = async (review_id, store_id, image_url) => {
 };
 
 // 리뷰 이미지 반환
-export const getReviewImageByReviewId = async (reviewId) => {
+export const getStoreReviewImageByReviewId = async (reviewId) => {
     const conn = await pool.getConnection();
 
     try {

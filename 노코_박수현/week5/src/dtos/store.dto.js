@@ -16,7 +16,7 @@ export const responseFromStore = (body) => {
     };
 };
 
-export const bodyToReview = (body) => {
+export const bodyToStoreReview = (body) => {
 
     return {
         member_id: body.member_id,
