@@ -216,3 +216,60 @@ export const getStoreMission = async (missionId) => {
         conn.release();
     }
 };
+
+// 가게 미션 도전 중인 미션에 추가
+// 가게 미션 도전 데이터 삽입
+export const addStoreMissionChallenge = async (data) => {
+    const conn = await pool.getConnection();
+
+    try {
+        const [confirm] = await pool.query( // confirm이라는 변수에 db 값을 받음
+            `SELECT EXISTS(SELECT 1 FROM member_mission WHERE mission_id = ?) as isExistMissionChallenge;`,
+            data.mission_id
+        );
+
+        if (confirm[0].isExistMissionChallenge) { // 멤버 미션에서 이미 미션이 있다면 null
+            return null;
+        }
+
+        const [result] = await pool.query( // result라는 변수에 db 값을 받음
+            `INSERT INTO member_mission (member_id, mission_id, status) VALUES (?, ?, ?);`,
+            [
+                data.member_id,
+                data.mission_id,
+                data.status,
+            ]
+        );
+
+        return result.insertId;
+    } catch (err) {
+        throw new Error(
+            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+        );
+    } finally {
+        conn.release();
+    }
+};
+
+// 가게 미션 도전 정보 얻기
+export const getStoreMissionChallenge = async (missionChallengeId) => {
+    const conn = await pool.getConnection();
+
+    try {
+        const [missionChallenge] = await pool.query(`SELECT * FROM member_mission WHERE id = ?;`, missionChallengeId);
+
+        console.log(missionChallenge);
+
+        if (missionChallenge.length == 0) {
+            return null;
+        }
+
+        return missionChallenge;
+    } catch (err) {
+        throw new Error(
+            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+        );
+    } finally {
+        conn.release();
+    }
+};

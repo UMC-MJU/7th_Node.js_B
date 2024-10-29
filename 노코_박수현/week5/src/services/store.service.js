@@ -1,7 +1,8 @@
 import {
     responseFromStore,
     responseFromStoreReview,
-    responseFromStoreMission
+    responseFromStoreMission,
+    responseFromStoreMissionChallenge,
 } from "../dtos/store.dto.js";;
 import {
     addStore,
@@ -13,6 +14,8 @@ import {
     setStoreReviewImage,
     addStoreMission,
     getStoreMission,
+    addStoreMissionChallenge,
+    getStoreMissionChallenge,
 } from "../repositories/store.repository.js";
 
 // 가게 추가
@@ -76,5 +79,25 @@ export const storeMissionAddition = async (data) => {
     return responseFromStoreMission(
         {
             mission,
+        });
+};
+
+// 가게 미션 도전 중인 미션에 추가
+export const storeMissionChallengeAddition = async (data) => {
+    const additionMissionChallengeId = await addStoreMissionChallenge({
+        member_id: data.member_id,
+        mission_id: data.mission_id,
+        status: data.status,
+    });
+
+    if (additionMissionChallengeId === null) {
+        throw new Error("이미 도전 중입니다.");
+    }
+
+    const missionChallenge = await getStoreMissionChallenge(additionMissionChallengeId);
+
+    return responseFromStoreMissionChallenge(
+        {
+            missionChallenge,
         });
 };

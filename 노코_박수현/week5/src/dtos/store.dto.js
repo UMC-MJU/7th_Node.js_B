@@ -52,3 +52,18 @@ export const responseFromStoreMission = (body) => {
         mission: body.mission,
     };
 };
+
+// 가게 미션 도전 중인 미션에 추가
+export const bodyToStoreMissionChallenge = (body) => {
+    return {
+        member_id: body.member_id,
+        mission_id: body.mission_id,
+        status: body.status,
+    };
+};
+
+export const responseFromStoreMissionChallenge = (body) => {
+    return {
+        missionChallenge: body.missionChallenge,
+    };
+};
