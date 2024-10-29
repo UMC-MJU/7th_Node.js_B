@@ -21,9 +21,9 @@ app.get("/", (req, res) => {
 app.post("/api/v1/users/signup", handleUserSignUp);
 
 app.post("/api/v1/stores/", handleStoreAddition);
-app.post("/api/v1/stores/review", handleStoreReviewAddition);
-app.post("/api/v1/stores/mission", handleStoreMissionAddition);
-app.post("/api/v1/stores/mission/challenge", handleStoreMissionChallengeAddition);
+app.post("/api/v1/stores/reviews", handleStoreReviewAddition);
+app.post("/api/v1/stores/missions", handleStoreMissionAddition);
+app.post("/api/v1/stores/missions/challenges", handleStoreMissionChallengeAddition);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

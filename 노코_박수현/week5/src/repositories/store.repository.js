@@ -74,16 +74,16 @@ export const addStoreReview = async (data) => {
     const conn = await pool.getConnection();
 
     try {
-        const [confirm] = await pool.query( // confirm이라는 변수에 db 값을 받음
+        const [confirm] = await pool.query(
             `SELECT EXISTS(SELECT 1 FROM store WHERE id = ?) as isExistStore;`,
             data.store_id
         );
 
-        if (!confirm[0].isExistStore) { // 스토어가 존재하지 않으면 null
+        if (!confirm[0].isExistStore) {
             return null;
         }
 
-        const [result] = await pool.query( // result라는 변수에 db 값을 받음
+        const [result] = await pool.query(
             `INSERT INTO review (member_id, store_id, body, score) VALUES (?, ?, ?, ?);`,
             [
                 data.member_id,
@@ -174,7 +174,7 @@ export const addStoreMission = async (data) => {
     const conn = await pool.getConnection();
 
     try {
-        const [result] = await pool.query( // result라는 변수에 db 값을 받음
+        const [result] = await pool.query(
             `INSERT INTO mission (store_id, reward, deadline, mission_spec) VALUES (?, ?, ?, ?);`,
             [
                 data.store_id,
@@ -223,16 +223,16 @@ export const addStoreMissionChallenge = async (data) => {
     const conn = await pool.getConnection();
 
     try {
-        const [confirm] = await pool.query( // confirm이라는 변수에 db 값을 받음
+        const [confirm] = await pool.query(
             `SELECT EXISTS(SELECT 1 FROM member_mission WHERE mission_id = ?) as isExistMissionChallenge;`,
             data.mission_id
         );
 
-        if (confirm[0].isExistMissionChallenge) { // 멤버 미션에서 이미 미션이 있다면 null
+        if (confirm[0].isExistMissionChallenge) {
             return null;
         }
 
-        const [result] = await pool.query( // result라는 변수에 db 값을 받음
+        const [result] = await pool.query(
             `INSERT INTO member_mission (member_id, mission_id, status) VALUES (?, ?, ?);`,
             [
                 data.member_id,
