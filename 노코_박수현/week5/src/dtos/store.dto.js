@@ -1,3 +1,4 @@
+// 가게 추가
 export const bodyToStore = (body) => {
 
     return {
@@ -16,6 +17,7 @@ export const responseFromStore = (body) => {
     };
 };
 
+// 가게 리뷰 추가
 export const bodyToStoreReview = (body) => {
 
     return {
@@ -31,5 +33,22 @@ export const responseFromStoreReview = (body) => {
     return {
         review: body.review,
         reviewImages: body.reviewImages,
+    };
+};
+
+// 가게 미션 추가
+export const bodyToStoreMission = (body) => {
+    const deadline = new Date(body.deadline);
+    return {
+        store_id: body.store_id,
+        reward: body.reward,
+        deadline,
+        mission_spec: body.mission_spec,
+    };
+};
+
+export const responseFromStoreMission = (body) => {
+    return {
+        mission: body.mission,
     };
 };

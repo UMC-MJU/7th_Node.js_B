@@ -1,6 +1,7 @@
 import {
     responseFromStore,
-    responseFromStoreReview
+    responseFromStoreReview,
+    responseFromStoreMission
 } from "../dtos/store.dto.js";;
 import {
     addStore,
@@ -10,8 +11,11 @@ import {
     getStoreReview,
     getStoreReviewImageByReviewId,
     setStoreReviewImage,
+    addStoreMission,
+    getStoreMission,
 } from "../repositories/store.repository.js";
 
+// 가게 추가
 export const storeAddition = async (data) => {
     const additionStoreId = await addStore({
         region_id: data.region_id,
@@ -29,6 +33,8 @@ export const storeAddition = async (data) => {
             storeRegion
         });
 };
+
+// 가게 리뷰 추가
 export const storeReviewAddition = async (data) => {
     const additionReviewId = await addStoreReview({
         member_id: data.member_id,
@@ -53,5 +59,22 @@ export const storeReviewAddition = async (data) => {
         {
             review,
             reviewImages,
+        });
+};
+
+// 가게 미션 추가
+export const storeMissionAddition = async (data) => {
+    const additionMissionId = await addStoreMission({
+        store_id: data.store_id,
+        reward: data.reward,
+        deadline: data.deadline,
+        mission_spec: data.mission_spec,
+    });
+
+    const mission = await getStoreMission(additionMissionId);
+
+    return responseFromStoreMission(
+        {
+            mission,
         });
 };

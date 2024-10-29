@@ -1,5 +1,6 @@
 import { pool } from "../db.config.js";
 
+// 가게 추가
 // 가게 데이터 삽입
 export const addStore = async (data) => {
     const conn = await pool.getConnection();
@@ -67,6 +68,7 @@ export const getRegionByRegionId = async (regionId) => {
     }
 };
 
+// 가게 리뷰 추가
 // 리뷰 데이터 삽입
 export const addStoreReview = async (data) => {
     const conn = await pool.getConnection();
@@ -157,6 +159,55 @@ export const getStoreReviewImageByReviewId = async (reviewId) => {
         );
 
         return reviewImage;
+    } catch (err) {
+        throw new Error(
+            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+        );
+    } finally {
+        conn.release();
+    }
+};
+
+// 가게 미션 추가
+// 가게 미션 데이터 삽입
+export const addStoreMission = async (data) => {
+    const conn = await pool.getConnection();
+
+    try {
+        const [result] = await pool.query( // result라는 변수에 db 값을 받음
+            `INSERT INTO mission (store_id, reward, deadline, mission_spec) VALUES (?, ?, ?, ?);`,
+            [
+                data.store_id,
+                data.reward,
+                data.deadline,
+                data.mission_spec,
+            ]
+        );
+
+        return result.insertId;
+    } catch (err) {
+        throw new Error(
+            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+        );
+    } finally {
+        conn.release();
+    }
+};
+
+// 가게 미션 정보 얻기
+export const getStoreMission = async (missionId) => {
+    const conn = await pool.getConnection();
+
+    try {
+        const [mission] = await pool.query(`SELECT * FROM mission WHERE id = ?;`, missionId);
+
+        console.log(mission);
+
+        if (mission.length == 0) {
+            return null;
+        }
+
+        return mission;
     } catch (err) {
         throw new Error(
             `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
