@@ -1,0 +1,6 @@
+// VS Code에서 import하는 모듈들이 js확장자와 함께 import되게 하기 위함.
+
+{
+    "javascript.preferences.importModuleSpecifierEnding": "js"
+  }
+  
