@@ -20,14 +20,14 @@ import {
 
 // 가게 추가
 export const storeAddition = async (data) => {
-    const additionStoreId = await addStore({
+    const storeId = await addStore({
         region_id: data.region_id,
         name: data.name,
         address: data.address,
         score: data.score,
     });
 
-    const store = await getStore(additionStoreId);
+    const store = await getStore(storeId);
     const storeRegion = await getRegionByRegionId(data.region_id);
 
     return responseFromStore(
@@ -39,7 +39,7 @@ export const storeAddition = async (data) => {
 
 // 가게 리뷰 추가
 export const storeReviewAddition = async (data) => {
-    const additionReviewId = await addStoreReview({
+    const reviewId = await addStoreReview({
         member_id: data.member_id,
         store_id: data.store_id,
         body: data.body,
@@ -47,16 +47,16 @@ export const storeReviewAddition = async (data) => {
 
     });
 
-    if (additionReviewId === null) {
+    if (reviewId === null) {
         throw new Error("가게가 존재하지 않습니다.");
     }
 
     for (const reviewImage of data.reviewImages) {
-        await setStoreReviewImage(additionReviewId, data.store_id, reviewImage);
+        await setStoreReviewImage(reviewId, data.store_id, reviewImage);
     }
 
-    const review = await getStoreReview(additionReviewId);
-    const reviewImages = await getStoreReviewImageByReviewId(additionReviewId);
+    const review = await getStoreReview(reviewId);
+    const reviewImages = await getStoreReviewImageByReviewId(reviewId);
 
     return responseFromStoreReview(
         {
@@ -67,14 +67,14 @@ export const storeReviewAddition = async (data) => {
 
 // 가게 미션 추가
 export const storeMissionAddition = async (data) => {
-    const additionMissionId = await addStoreMission({
+    const missionId = await addStoreMission({
         store_id: data.store_id,
         reward: data.reward,
         deadline: data.deadline,
         mission_spec: data.mission_spec,
     });
 
-    const mission = await getStoreMission(additionMissionId);
+    const mission = await getStoreMission(missionId);
 
     return responseFromStoreMission(
         {
@@ -84,17 +84,17 @@ export const storeMissionAddition = async (data) => {
 
 // 가게 미션 도전 중인 미션에 추가
 export const storeMissionChallengeAddition = async (data) => {
-    const additionMissionChallengeId = await addStoreMissionChallenge({
+    const memMissionId = await addStoreMissionChallenge({
         member_id: data.member_id,
         mission_id: data.mission_id,
         status: data.status,
     });
 
-    if (additionMissionChallengeId === null) {
+    if (memMissionId === null) {
         throw new Error("이미 도전 중입니다.");
     }
 
-    const missionChallenge = await getStoreMissionChallenge(additionMissionChallengeId);
+    const missionChallenge = await getStoreMissionChallenge(memMissionId);
 
     return responseFromStoreMissionChallenge(
         {
