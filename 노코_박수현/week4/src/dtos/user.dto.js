@@ -1,5 +1,5 @@
+// 유저 회원 가입
 export const bodyToUser = (body) => {
-    // const birth = new Date(body.birth);
 
     return {
         name: body.name,
@@ -14,9 +14,25 @@ export const bodyToUser = (body) => {
         preferences: body.preferences,
     };
 };
+
 export const responseFromUser = (body) => {
     return {
         user: body.user,
         preferences: body.preferences,
+    };
+};
+
+// 유저 약관 동의
+export const bodyToUserAgree = (body) => {
+
+    return {
+        member_id: body.member_id,
+        terms: body.terms,
+    };
+};
+
+export const responseFromUserAgree = (body) => {
+    return {
+        userAgree: body.userAgree,
     };
 };

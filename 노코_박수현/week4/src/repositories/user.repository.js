@@ -1,5 +1,6 @@
 import { pool } from "../db.config.js";
 
+// 유저 회원가입
 // User 데이터 삽입
 export const addUser = async (data) => {
     const conn = await pool.getConnection();
@@ -95,6 +96,47 @@ export const getUserPreferencesByUserId = async (userId) => {
         );
 
         return preferences;
+    } catch (err) {
+        throw new Error(
+            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+        );
+    } finally {
+        conn.release();
+    }
+};
+
+// 유저 약관 동의
+// 약관 동의 매핑
+export const setUserAgree = async (member_id, terms_id) => {
+    const conn = await pool.getConnection();
+
+    try {
+        await pool.query(
+            `INSERT INTO member_agree (member_id, terms_id) VALUES (?, ?);`,
+            [member_id, terms_id]
+        );
+
+        return;
+    } catch (err) {
+        throw new Error(
+            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+        );
+    } finally {
+        conn.release();
+    }
+};
+
+// 약관 동의 반환
+export const getUserAgreeByUserId = async (member_id) => {
+    const conn = await pool.getConnection();
+
+    try {
+        const [userAgree] = await pool.query(
+            `SELECT * FROM member_agree WHERE member_id = ?;`,
+            member_id
+        );
+
+        return userAgree;
     } catch (err) {
         throw new Error(
             `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`

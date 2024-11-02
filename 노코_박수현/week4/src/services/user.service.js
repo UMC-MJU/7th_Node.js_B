@@ -1,11 +1,14 @@
-import { responseFromUser } from "../dtos/user.dto.js";;
+import { responseFromUser, responseFromUserAgree } from "../dtos/user.dto.js";;
 import {
     addUser,
     getUser,
     getUserPreferencesByUserId,
     setPreference,
+    getUserAgreeByUserId,
+    setUserAgree
 } from "../repositories/user.repository.js";
 
+// 유저 회원가입
 export const userSignUp = async (data) => {
     const joinUserId = await addUser({
         name: data.name,
@@ -36,3 +39,19 @@ export const userSignUp = async (data) => {
             preferences
         });
 };
+
+// 유저 약관 동의
+export const userAgreeAddition = async (data) => {
+
+    for (const condition of data.terms) {
+        await setUserAgree(data.member_id, condition);
+    }
+
+    const userAgree = await getUserAgreeByUserId(data.member_id);
+
+    return responseFromUserAgree(
+        {
+            userAgree
+        });
+};
+
