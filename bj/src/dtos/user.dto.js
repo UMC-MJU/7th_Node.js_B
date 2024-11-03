@@ -15,6 +15,20 @@ export const responseFromUser = (body) => {
     return {
     };
 };
+
+// 가게 생성에 필요한 DTO
+export const InsertStoreDTO = (body,time) => {
+    console.log("body11:", body)
+    return {
+        regionId : body.region_id,
+        name : body.name,
+        address : body.address,
+        score : body.score,
+        createdAt : time,
+        updatedAt : time,
+    };
+};
+
 // 리뷰 생성에 필요한 DTO
 export const InsertReviewDTO = (body,time) =>{
     console.log("body11:", body)

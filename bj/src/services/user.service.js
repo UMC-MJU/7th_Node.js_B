@@ -4,6 +4,7 @@ import {
     getUser,
     getUserPreferencesByUserId,
     setPreference,
+    addStore,
     addReview,
     addMission,
     addMemberMission,
@@ -34,6 +35,19 @@ export const userSignUp = async (data) => {
         user, preferences 
     });
 };
+
+export const InsertStoreService = async (data) => {
+    console.log("body12:", data)
+    const joinMissionId = await addStore({
+        regionId : data.regionId,
+        name : data.name,
+        address : data.address,
+        score : data.score,
+        createdAt : data.createdAt,
+        updatedAt : data.updatedAt,
+    });
+    return joinMissionId;
+}
 
 export const InsertReviewService = async (data) =>{
     console.log("body12", data);
