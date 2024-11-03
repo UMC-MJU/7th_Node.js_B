@@ -1,7 +1,7 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import { handleUserSignUp,InsertReviewController, InsertMissionController, InsertMemberMissionController} from "./controllers/user.controller.js";
+import { handleUserSignUp,InsertStoreController, InsertReviewController, InsertMissionController, InsertMemberMissionController} from "./controllers/user.controller.js";
 
 dotenv.config();
 
@@ -19,6 +19,7 @@ app.get("/", (req, res) => {
 
 app.post("/api/v1/users/signup", handleUserSignUp);
 
+app.post("/api/v1/store", InsertStoreController);
 app.post("/api/v1/review", InsertReviewController);
 
 // 가게의 미션 생성하기

@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
-import { bodyToUser, InsertReviewDTO, InsertMissionDTO ,InsertMemberMissionDTO} from "../dtos/user.dto.js";
-import { userSignUp, InsertReviewService, InsertMissionService ,InsertMemberMissionService} from "../services/user.service.js";
+import { bodyToUser, InsertStoreDTO, InsertReviewDTO, InsertMissionDTO ,InsertMemberMissionDTO} from "../dtos/user.dto.js";
+import { userSignUp, InsertStoreService, InsertReviewService, InsertMissionService ,InsertMemberMissionService} from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
   console.log("회원가입을 요청했습니다!");
@@ -8,6 +8,20 @@ export const handleUserSignUp = async (req, res, next) => {
 
   const user = await userSignUp(bodyToUser(req.body));
   res.status(StatusCodes.OK).json({ result: user });
+};
+
+//  특정 지역의 가게를 생성하는 컨트롤러
+export const InsertStoreController = async (req, res, next) => {
+  try {
+    const time = new Date();
+    console.log("가게의 미션을 생성합니다.");
+    console.log("body:", req.body);
+    const store = await InsertStoreService(InsertStoreDTO(req.body,time));
+    res.status(StatusCodes.OK).json({ result: store });
+  } catch (error){
+    console.error("Error occurred while creating store: ", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: '가게 생성 중 오류가 발생했습니다.' });
+  }
 };
 
 // 리뷰를 생성하는 컨트롤러

@@ -101,6 +101,32 @@ export const getUserPreferencesByUserId = async (userId) => {
   }
 };
 
+//미션 데이터 삽입
+export const addStore = async (data) => {
+  const conn = await pool.getConnection();
+  console.log("body13:", data)
+  try {
+      const [result] = await pool.query(
+          `INSERT INTO store (region_id, name, address, score, created_at, updated_at) VALUES (?, ?, ?, ?, ? ,?);`,
+          [
+            data.regionId,
+            data.name,
+            data.address,
+            data.score,
+            data.createdAt,
+            data.updatedAt,
+          ]
+      );
+      return result.insertId;
+  } catch (err) {
+      throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+      );
+  } finally {
+      conn.release();
+  };
+}
+
 // 리뷰 데이터 생성
 export const addReview = async (data) => {
   const conn = await pool.getConnection();
@@ -163,6 +189,7 @@ export const addMission = async (data) => {
     };
 }
 
+// 멤버 미션 추가하기
 export const addMemberMission = async (data) => {
   const conn = await pool.getConnection();
   console.log("body13:", data)
