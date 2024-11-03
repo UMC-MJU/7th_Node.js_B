@@ -1,0 +1,11 @@
+{
+  "name": "7th_node.js_b",
+  "version": "1.0.0",
+  "description": "[UMC MJU 7th를 위한 깃허브 사용법 및 규칙](https://www.notion.so/makeus-challenge/UMC-MJU-GITHUB-RULE-b45c0d968a1a4fb789c67f3b0081ce17?pvs=4)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
