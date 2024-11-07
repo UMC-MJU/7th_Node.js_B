@@ -8,6 +8,8 @@ import {
     addReview,
     addMission,
     addMemberMission,
+    getAllStoreReviews,
+    responseFromReviews,
 } from "../repositories/user.repository.js";
 
 export const userSignUp = async (data) => {
@@ -85,3 +87,9 @@ export const InsertMemberMissionService = async (data) => {
     });
     return joinMemberMissionId;
 }
+
+// 가게에 속한 리뷰들을 조회하는 api Service
+export const listStoreReviews = async (storeId) => {
+    const reviews = await getAllStoreReviews(storeId);
+    return responseFromReviews(reviews);
+};
