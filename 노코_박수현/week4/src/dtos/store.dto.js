@@ -2,18 +2,19 @@
 export const bodyToStore = (body) => {
 
     return {
-        region_id: body.region_id,
+        regionId: body.regionId,
         name: body.name,
         address: body.address,
         score: body.score,
-        region_name: body.region_name,
     };
 };
 
-export const responseFromStore = (body) => {
+export const responseFromStore = ({ store, region }) => {
     return {
-        store: body.store,
-        region: body.region,
+        name: store.name,
+        address: store.address,
+        score: store.score,
+        region: region.name
     };
 };
 
@@ -21,18 +22,22 @@ export const responseFromStore = (body) => {
 export const bodyToStoreReview = (body) => {
 
     return {
-        member_id: body.member_id,
-        store_id: body.store_id,
+        memberId: body.memberId,
+        storeId: body.storeId,
         body: body.body,
         score: body.score,
         reviewImages: body.reviewImages,
     };
 };
 
-export const responseFromStoreReview = (body) => {
+export const responseFromStoreReview = ({ review, reviewImages }) => {
+    const imageUrls = reviewImages.map(
+        (image) => image.imageUrl
+    );
     return {
-        review: body.review,
-        reviewImages: body.reviewImages,
+        body: review.body,
+        score: review.score,
+        imageUrl: imageUrls
     };
 };
 
@@ -40,30 +45,52 @@ export const responseFromStoreReview = (body) => {
 export const bodyToStoreMission = (body) => {
     const deadline = new Date(body.deadline);
     return {
-        store_id: body.store_id,
+        storeId: body.storeId,
         reward: body.reward,
         deadline,
-        mission_spec: body.mission_spec,
+        missionSpec: body.missionSpec,
     };
 };
 
-export const responseFromStoreMission = (body) => {
+export const responseFromStoreMission = ({ mission }) => {
     return {
-        mission: body.mission,
+        reward: mission.reward,
+        deadline: mission.deadline,
+        missionSpec: mission.missionSpec
     };
 };
 
 // 가게 미션 도전 중인 미션에 추가
 export const bodyToStoreMissionChallenge = (body) => {
     return {
-        member_id: body.member_id,
-        mission_id: body.mission_id,
+        memberId: body.memberId,
+        missionId: body.missionId,
         status: body.status,
     };
 };
 
-export const responseFromStoreMissionChallenge = (body) => {
+export const responseFromStoreMissionChallenge = ({ missionChallenge }) => {
     return {
-        missionChallenge: body.missionChallenge,
+        status: missionChallenge.status,
+    };
+};
+
+// 가게 리뷰 불러오기
+export const responseFromReviews = (reviews) => {
+    return {
+        data: reviews,
+        pagination: {
+            cursor: reviews.length ? reviews[reviews.length - 1].id : null,
+        },
+    };
+};
+
+// 가게 미션 불러오기
+export const responseFromMissions = (missions) => {
+    return {
+        data: missions,
+        pagination: {
+            cursor: missions.length ? missions[missions.length - 1].id : null,
+        },
     };
 };
