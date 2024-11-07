@@ -6,8 +6,8 @@ export const bodyToUser = (body) => {
         gender: body.gender,
         age: body.age,
         address: body.address || "",
-        spec_address: body.spec_address || "",
-        phone_num: body.phone_num,
+        specAddress: body.specAddress || "",
+        phoneNum: body.phoneNum,
         status: body.status,
         email: body.email,
         point: body.point,
@@ -15,10 +15,15 @@ export const bodyToUser = (body) => {
     };
 };
 
-export const responseFromUser = (body) => {
+export const responseFromUser = ({ user, preferences }) => {
+    const preferFoods = preferences.map(
+        (preference) => preference.category.name
+    );
+
     return {
-        user: body.user,
-        preferences: body.preferences,
+        email: user.email,
+        name: user.name,
+        preferCategory: preferFoods,
     };
 };
 
@@ -26,13 +31,44 @@ export const responseFromUser = (body) => {
 export const bodyToUserAgree = (body) => {
 
     return {
-        member_id: body.member_id,
+        memberId: body.memberId,
         terms: body.terms,
     };
 };
 
-export const responseFromUserAgree = (body) => {
+export const responseFromUserAgree = ({ userAgree }) => {
     return {
-        userAgree: body.userAgree,
+        userAgree: userAgree,
+    };
+};
+
+// 내가 작성한 리뷰 목록 불러오기
+export const responseFromReviews = (reviews) => {
+    return {
+        data: reviews,
+        pagination: {
+            cursor: reviews.length ? reviews[reviews.length - 1].id : null,
+        },
+    };
+};
+
+// 내가 진행 중인 미션 목록 불러오기
+export const responseFromMissions = (missions) => {
+    return {
+        data: missions,
+        pagination: {
+            cursor: missions.length ? missions[missions.length - 1].id : null,
+        },
+    };
+};
+export const bodyToMissionComplete = (body) => {
+
+    return {
+        status: body.status,
+    };
+};
+export const responseFromMissionComplete = (missionComplete) => {
+    return {
+        data: missionComplete,
     };
 };

@@ -10,6 +10,8 @@ import {
     storeReviewAddition,
     storeMissionAddition,
     storeMissionChallengeAddition,
+    listStoreReviews,
+    listStoreMissions,
 } from "../services/store.service.js";
 
 // 가게 추가
@@ -46,4 +48,22 @@ export const handleStoreMissionChallengeAddition = async (req, res, next) => {
 
     const store = await storeMissionChallengeAddition(bodyToStoreMissionChallenge(req.body));
     res.status(StatusCodes.OK).json({ result: store });
+};
+
+//가게 리뷰 불러오기
+export const handleListStoreReviews = async (req, res, next) => {
+    const reviews = await listStoreReviews(
+        parseInt(req.params.storeId),
+        typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
+    );
+    res.status(StatusCodes.OK).json({ result: reviews });
+};
+
+//가게 미션 불러오기
+export const handleListStoreMissions = async (req, res, next) => {
+    const missions = await listStoreMissions(
+        parseInt(req.params.storeId),
+        typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
+    );
+    res.status(StatusCodes.OK).json({ result: missions });
 };

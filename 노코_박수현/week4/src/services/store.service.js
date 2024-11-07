@@ -3,6 +3,8 @@ import {
     responseFromStoreReview,
     responseFromStoreMission,
     responseFromStoreMissionChallenge,
+    responseFromReviews,
+    responseFromMissions,
 } from "../dtos/store.dto.js";;
 import {
     addStore,
@@ -16,35 +18,36 @@ import {
     getStoreMission,
     addStoreMissionChallenge,
     getStoreMissionChallenge,
+    getAllStoreReviews,
+    getAllStoreMissions,
 } from "../repositories/store.repository.js";
 
 // 가게 추가
 export const storeAddition = async (data) => {
     const storeId = await addStore({
-        region_id: data.region_id,
+        regionId: data.regionId,
         name: data.name,
         address: data.address,
         score: data.score,
     });
 
     const store = await getStore(storeId);
-    const storeRegion = await getRegionByRegionId(data.region_id);
+    const region = await getRegionByRegionId(data.regionId);
 
     return responseFromStore(
         {
             store,
-            storeRegion
+            region
         });
 };
 
 // 가게 리뷰 추가
 export const storeReviewAddition = async (data) => {
     const reviewId = await addStoreReview({
-        member_id: data.member_id,
-        store_id: data.store_id,
+        memberId: data.memberId,
+        storeId: data.storeId,
         body: data.body,
         score: data.score,
-
     });
 
     if (reviewId === null) {
@@ -52,7 +55,7 @@ export const storeReviewAddition = async (data) => {
     }
 
     for (const reviewImage of data.reviewImages) {
-        await setStoreReviewImage(reviewId, data.store_id, reviewImage);
+        await setStoreReviewImage(reviewId, reviewImage);
     }
 
     const review = await getStoreReview(reviewId);
@@ -68,10 +71,10 @@ export const storeReviewAddition = async (data) => {
 // 가게 미션 추가
 export const storeMissionAddition = async (data) => {
     const missionId = await addStoreMission({
-        store_id: data.store_id,
+        storeId: data.storeId,
         reward: data.reward,
         deadline: data.deadline,
-        mission_spec: data.mission_spec,
+        missionSpec: data.missionSpec,
     });
 
     const mission = await getStoreMission(missionId);
@@ -85,8 +88,8 @@ export const storeMissionAddition = async (data) => {
 // 가게 미션 도전 중인 미션에 추가
 export const storeMissionChallengeAddition = async (data) => {
     const memMissionId = await addStoreMissionChallenge({
-        member_id: data.member_id,
-        mission_id: data.mission_id,
+        memberId: data.memberId,
+        missionId: data.missionId,
         status: data.status,
     });
 
@@ -100,4 +103,16 @@ export const storeMissionChallengeAddition = async (data) => {
         {
             missionChallenge,
         });
+};
+
+// 가게 리뷰 불러오기
+export const listStoreReviews = async (storeId, cursor) => {
+    const reviews = await getAllStoreReviews(storeId, cursor);
+    return responseFromReviews(reviews);
+};
+
+// 가게 리뷰 불러오기
+export const listStoreMissions = async (storeId, cursor) => {
+    const missions = await getAllStoreMissions(storeId, cursor);
+    return responseFromMissions(missions);
 };
