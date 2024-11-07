@@ -1,6 +1,6 @@
 {
   "name": "javor",
-  "type" : "module",
+  "type": "module",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.21.1"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "http-status-codes": "^2.3.0",
+    "mysql2": "^3.11.4",
+    "nodemon": "^3.1.7"
   }
 }
