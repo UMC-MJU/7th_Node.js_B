@@ -1,7 +1,7 @@
 import { responseFromUser } from "../dtos/user.dto.js";
 import {
-    addMember,
-    getMember,
+    addUser,
+    getUser,
     getUserPreferencesByUserId,
     setPreference,
     addStore,
@@ -11,7 +11,7 @@ import {
 } from "../repositories/user.repository.js";
 
 export const userSignUp = async (data) => {
-    const joinUserId = await addMember({
+    const joinUserId = await addUser({
         email: data.email,
         name: data.name,
         gender: data.gender,
@@ -28,7 +28,7 @@ export const userSignUp = async (data) => {
         await setPreference(joinUserId, preference);
     }
 
-    const user = await getMember(joinUserId);
+    const user = await getUser(joinUserId);
     const preferences = await getUserPreferencesByUserId(joinUserId);
 
     return responseFromUser({
