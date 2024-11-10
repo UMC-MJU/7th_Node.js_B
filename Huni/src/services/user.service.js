@@ -1,4 +1,4 @@
-import { responseFromUser} from "../dtos/user.dto.js";
+import { responseFromUser, responseFromReviews, responseFromMissions} from "../dtos/user.dto.js";
 import {
   addUser,
   getUser,
@@ -6,7 +6,11 @@ import {
   setPreference,
   setReviewinStore,
   setMissioninStore,
-  setMissioninUser
+  setMissioninUser,
+  getAllStoreReviews,
+  getAllUserReviews,
+  getAllStoreMissions,
+  getAllUserMissions
 } from "../repositories/user.repositories.js";
 
 export const userSignUp = async (data) => {
@@ -14,10 +18,10 @@ export const userSignUp = async (data) => {
     email: data.email,
     name: data.name,
     gender: data.gender,
-    birth: data.birth,
+    // birth: data.birth,
     address: data.address,
-    detailAddress: data.detailAddress,
-    phoneNumber: data.phoneNumber,
+    specaddress: data.specaddress,
+    phoneNum: data.phoneNum,
   });
 
   if (joinUserId === null) {
@@ -63,4 +67,28 @@ export const UserMissionMake = async (data) => {
         status: data.status,
     })
     return joinMission;
+}
+
+//가게 리뷰 get
+export const listStoreReviews = async (storeId,cursor) =>{
+  const reviews = await getAllStoreReviews(storeId,cursor);
+  return responseFromReviews(reviews);
+}
+
+//유저 리뷰 get
+export const listUserReviews = async (memberId,cursor) =>{
+  const reviews = await getAllUserReviews(memberId,cursor);
+  return responseFromReviews(reviews);
+}
+
+//가게 미션 get
+export const listStoreMissions = async (storeId,cursor) =>{
+  const missions = await getAllStoreMissions(storeId,cursor);
+  return responseFromMissions(missions);
+}
+
+//유저 미션 get
+export const listUserMissions = async (memberId, status,cursor) =>{
+  const missions = await getAllUserMissions(memberId, status,cursor);
+  return responseFromMissions(missions);
 }

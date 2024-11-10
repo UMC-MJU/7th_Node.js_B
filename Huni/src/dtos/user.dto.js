@@ -1,36 +1,28 @@
 export const bodyToUser = (body) => {
-    const birth = new Date(body.birth);
+    // const birth = new Date(body.birth);
   
     return {
       email: body.email,
       name: body.name,
       gender: body.gender,
-      birth,
+    //   birth,
       address: body.address || "",
-      detailAddress: body.detailAddress || "",
-      phoneNumber: body.phoneNumber,
+      specaddress: body.specaddress || "",
+      phoneNum: body.phoneNum,
       preferences: body.preferences,
     };
   };
 
 export const responseFromUser = ({ user, preferences }) => {
 // user 객체가 배열 형태로 반환되었기 때문에 첫 번째 요소로 접근
-    const userData = user[0];
+    const preferFoods = preferences.map(
+        (preference) => preference.foodCategory.name
+        );
 
     return {
-        id: userData.id,
-        email: userData.email,
-        name: userData.name,
-        gender: userData.gender,
-        birth: userData.birth,
-        address: userData.address,
-        detailAddress: userData.detailaddress,
-        phoneNumber: userData.phone_number,
-        preferences: preferences.map((pref) => ({
-        id: pref.id,
-        categoryId: pref.food_category_id,
-        categoryName: pref.name,
-        })),
+        email: user.email,
+        name: user.name,
+        preferCategory: preferFoods,
     };
 }; 
 
@@ -45,10 +37,11 @@ export const bodyToReview = (body) =>{
 };
 
 export const bodyToMission = (body) =>{
+    const deadline = new Date(body.deadline);
     return{
         storeid:body.storeid,
         reward: body.reward,
-        deadline:body.deadline,
+        deadline,
         missionspec: body.missionspec,
     };
 };
@@ -60,3 +53,23 @@ export const bodyToUserMission = (body) =>{
         status: body.status
     }
 }
+
+//리뷰
+export const responseFromReviews = (reviews) => {
+    return {
+        data: reviews,
+        pagination: {
+            cursor: reviews.length ? reviews[reviews.length - 1].id : null,
+        },
+    };
+};
+
+//미션
+export const responseFromMissions = (missions) => {
+    return {
+        data: missions,
+        pagination: {
+            cursor: missions.length ? missions[missions.length - 1].id : null,
+        },
+    };
+};
