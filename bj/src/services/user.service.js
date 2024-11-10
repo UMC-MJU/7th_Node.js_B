@@ -1,4 +1,9 @@
-import { responseFromUser ,responseFromReviewsDTO} from "../dtos/user.dto.js";
+import { responseFromUser ,
+    responseFromReviewsDTO, 
+    responseFromMissionsDTO,
+    responseFromMReviewsDTO,
+    responseFromMMissionsDTO,
+} from "../dtos/user.dto.js";
 import {
     addUser,
     getUser,
@@ -9,6 +14,9 @@ import {
     addMission,
     addMemberMission,
     getAllStoreReviews,
+    getAllMemberReviews,
+    getAllStoreMissions,
+    getAllMemberMissions,
 } from "../repositories/user.repository.js";
 
 export const userSignUp = async (data) => {
@@ -82,7 +90,26 @@ export const InsertMemberMissionService = async (data) => {
     return joinMemberMissionId;
 }
 
-export const listStoreReviewsService = async (storeId) => {
-    const reviews = await getAllStoreReviews(storeId);
+// 특정 가게의 리뷰 가져오는 서비스
+export const listStoreReviewsService = async (storeId,cursor) => {
+    const reviews = await getAllStoreReviews(storeId,cursor);
     return responseFromReviewsDTO(reviews);
+};
+
+// 특정 멤버의 리뷰를 가져오는 서비스
+export const listMemberReviewsService = async (memberId,cursor) => {
+    const reviews = await getAllMemberReviews(memberId,cursor);
+    return responseFromMReviewsDTO(reviews);
+};
+
+// 특정 가게의 미션을 가져오는 서비스
+export const listStoreMissionService = async (storeId,cursor) => {
+    const missions = await getAllStoreMissions(storeId,cursor);
+    return responseFromMissionsDTO(missions);
+};
+
+// 특정 멤버의 미션을 가져오는 서비스
+export const listMemberMissionService = async (memberId,status,cursor) => {
+    const missions = await getAllMemberMissions(memberId,status,cursor);
+    return responseFromMMissionsDTO(missions);
 };

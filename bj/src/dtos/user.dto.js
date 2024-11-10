@@ -67,12 +67,43 @@ export const InsertMemberMissionDTO = (body) => {
     };
 };
 
-// 리뷰 가져오는데 필요한 DTO
+// 특정 가게의 리뷰 가져오는데 필요한 DTO
 export const responseFromReviewsDTO = (reviews) => {
     return {
         data: reviews,
         pagination: {
-        cursor: reviews.length ? reviews[reviews.length - 1].id : null,
+            cursor: reviews.length ? reviews[reviews.length - 1].id : null,
         },
     };
 };
+
+// 특정 멤버의 리뷰 가져오는데 필요한 DTO
+export const responseFromMReviewsDTO = (reviews) => {
+    return {
+        data: reviews,
+        pagination: {
+            cursor: reviews.length ? reviews[reviews.length - 1].id : null,
+        },
+    };
+};
+
+// 특정 멤버의 미션을 가져오는데 필요한 DTO
+export const responseFromMissionsDTO = (missions) => {
+    return {
+        data: missions,
+        pagination: {
+            cursor: missions.length ? missions[missions.length - 1].id : null,
+        },
+    };
+};
+
+// 특정 멤버의 미션을 가져오는데 필요한 DTO
+export const responseFromMMissionsDTO = (missions) => {
+    return {
+        data: missions,
+        pagination: {
+            cursor: missions.length ? missions[missions.length - 1].id : null,
+        },
+    };
+};
+

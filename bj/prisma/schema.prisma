@@ -93,7 +93,7 @@ model Review{
   storeId         Int?          @map("store_id")
   body            String?       @db.Text
   score           Float
-  createdAt     DateTime?       @default(now()) @map("created_at") 
+  createdAt       DateTime?       @default(now()) @map("created_at") 
 
   @@index([memberId], map: "member_id")
   @@index([storeId], map: "store_id")

@@ -1,4 +1,4 @@
-import { pool,prisma } from "../db.config.js";
+import { prisma } from "../db.config.js";
 
 // User 데이터 삽입
 export const addUser = async (data) => {
@@ -132,18 +132,73 @@ export const addMemberMission = async (data) => {
 }
 
 // 가게 리뷰 가져오는 repository
-export const getAllStoreReviews = async (storeId) => {
+export const getAllStoreReviews = async (storeId, cursor) => {
   console.log("body13:", storeId)
   try{
-    const reviews = await prisma.userStoreReview.findMany({
-      select: { id: true, content: true, store: true, user: true },
+    const reviews = await prisma.review.findMany({
+      select: { id: true, store: true, storeId: true, member: true , memberId: true, body: true, score: true,},
       where: { storeId: storeId, id: { gt: cursor } },
       orderBy: { id: "asc" },
       take: 5,
     });
   
     return reviews;
-  }catch{
+  }catch(err){
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+      );
+  }
+};
+
+// 특정 멤버 리뷰 가져오는 repository
+export const getAllMemberReviews = async (memberId, cursor) => {
+  console.log("body13:", memberId)
+  try{
+    const reviews = await prisma.review.findMany({
+      select: { id: true, store: true, storeId: true, member: true , memberId: true, body: true, score: true,},
+      where: { memberId: memberId, id: { gt: cursor } },
+      orderBy: { id: "asc" },
+      take: 5,
+    });
+  
+    return reviews;
+  }catch(err){
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+      );
+  }
+};
+// 특정 가게의 미션을 가져오는 repository
+export const getAllStoreMissions = async (storeId, cursor) => {
+  console.log("body13:", storeId)
+  try{
+    const missions = await prisma.mission.findMany({
+      select: { id: true, store: true, storeId: true, reward : true, deadline : true, missionSpec : true,},
+      where: { storeId: storeId, id: { gt: cursor } },
+      orderBy: { id: "asc" },
+      take: 5,
+    });
+  
+    return missions;
+  }catch(err){
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+      );
+  }
+};
+// 특정 멤버의 미션을 가져오는 repository
+export const getAllMemberMissions = async (memberId, status, cursor) => {
+  console.log("body13:", memberId)
+  try{
+    const missions = await prisma.memberMission.findMany({
+      select: { id: true, member: true, memberId: true, mission : true, missionId : true, status : true,},
+      where: { memberId: memberId, status : status, id: { gt: cursor } },
+      orderBy: { id: "asc" },
+      take: 5,
+    });
+  
+    return missions;
+  }catch(err){
     throw new Error(
       `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
       );
