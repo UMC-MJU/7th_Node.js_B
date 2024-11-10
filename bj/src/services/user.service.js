@@ -41,25 +41,22 @@ export const userSignUp = async (data) => {
 
 export const InsertStoreService = async (data) => {
     console.log("body12:", data)
-    const joinMissionId = await addStore({
+    const joinStoreId = await addStore({
         regionId : data.regionId,
         name : data.name,
         address : data.address,
         score : data.score,
-        createdAt : data.createdAt,
-        updatedAt : data.updatedAt,
     });
-    return joinMissionId;
+    return joinStoreId;
 }
 
 export const InsertReviewService = async (data) =>{
     console.log("body12", data);
     const joinReviewId = await addReview({
-        userid : data.userid,
-        storeid: data.storeid,
+        memberId : data.memberId,
+        storeId: data.storeId,
         body: data.body,
         score: data.score,
-        createdAt : data.createdAt,
     });
     return joinReviewId;
 };
@@ -70,9 +67,7 @@ export const InsertMissionService = async (data) => {
         storeId : data.storeId,
         reward : data.reward,
         deadline : data.deadline,
-        missionspec : data.missionspec,
-        createdAt : data.createdAt,
-        updatedAt : data.updatedAt,
+        missionSpec : data.missionSpec,
     });
     return joinMissionId;
 }
@@ -83,8 +78,6 @@ export const InsertMemberMissionService = async (data) => {
         memberId : data.memberId,
         missionId : data.missionId,
         status : data.status,
-        createdAt : data.createdAt,
-        updatedAt : data.updatedAt,
     });
     return joinMemberMissionId;
 }

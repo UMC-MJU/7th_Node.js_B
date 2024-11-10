@@ -13,10 +13,9 @@ export const handleUserSignUp = async (req, res, next) => {
 //  특정 지역의 가게를 생성하는 컨트롤러
 export const InsertStoreController = async (req, res, next) => {
   try {
-    const time = new Date();
     console.log("가게의 미션을 생성합니다.");
     console.log("body:", req.body);
-    const store = await InsertStoreService(InsertStoreDTO(req.body,time));
+    const store = await InsertStoreService(InsertStoreDTO(req.body));
     res.status(StatusCodes.OK).json({ result: store });
   } catch (error){
     console.error("Error occurred while creating store: ", error);
@@ -27,10 +26,9 @@ export const InsertStoreController = async (req, res, next) => {
 // 리뷰를 생성하는 컨트롤러
 export const InsertReviewController = async (req, res, next) => {
   try {
-    const time = new Date();
     console.log("리뷰가 생성되었습니다.");
     console.log("body: ", req.body);
-    const reviewData = InsertReviewDTO(req.body,time);
+    const reviewData = InsertReviewDTO(req.body);
     const review = await InsertReviewService(reviewData);
     res.status(StatusCodes.OK).json({ result: review });
   } catch (error) {
@@ -42,10 +40,9 @@ export const InsertReviewController = async (req, res, next) => {
 //  미션을 생성하는 컨트롤러
 export const InsertMissionController = async (req, res, next) => {
   try {
-    const time = new Date();
     console.log("가게의 미션을 생성합니다.");
     console.log("body:", req.body);
-    const mission = await InsertMissionService(InsertMissionDTO(req.body,time));
+    const mission = await InsertMissionService(InsertMissionDTO(req.body));
     res.status(StatusCodes.OK).json({ result: mission });
   } catch (error){
     console.error("Error occurred while creating mission: ", error);
@@ -56,10 +53,9 @@ export const InsertMissionController = async (req, res, next) => {
 // 멤버가 미션을 추가하는 컨트롤러
 export const InsertMemberMissionController = async (req, res, next) => {
   try {
-    const time = new Date();
     console.log("해당 멤버 미션에 가게의 미션을 추가합니다.");
     console.log("body:", req.body);
-    const Membermission = await InsertMemberMissionService(InsertMemberMissionDTO(req.body,time));
+    const Membermission = await InsertMemberMissionService(InsertMemberMissionDTO(req.body));
     res.status(StatusCodes.OK).json({ result: Membermission });
   } catch (error){
     console.error("Error occurred while creating member_mission: ", error);
