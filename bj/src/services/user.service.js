@@ -1,4 +1,9 @@
-import { responseFromUser } from "../dtos/user.dto.js";
+import { responseFromUser ,
+    responseFromReviewsDTO, 
+    responseFromMissionsDTO,
+    responseFromMReviewsDTO,
+    responseFromMMissionsDTO,
+} from "../dtos/user.dto.js";
 import {
     addUser,
     getUser,
@@ -8,16 +13,22 @@ import {
     addReview,
     addMission,
     addMemberMission,
+    getAllStoreReviews,
+    getAllMemberReviews,
+    getAllStoreMissions,
+    getAllMemberMissions,
 } from "../repositories/user.repository.js";
 
 export const userSignUp = async (data) => {
+    console.log("body12:", data)
     const joinUserId = await addUser({
         email: data.email,
+        age: data.age,
         name: data.name,
         gender: data.gender,
         address: data.address,
-        detailAddress: data.detailAddress,
-        phoneNumber: data.phoneNumber,
+        specAddress: data.specAddress,
+        phoneNum: data.phoneNum,
     });
 
     if (joinUserId === null) {
@@ -38,25 +49,22 @@ export const userSignUp = async (data) => {
 
 export const InsertStoreService = async (data) => {
     console.log("body12:", data)
-    const joinMissionId = await addStore({
+    const joinStoreId = await addStore({
         regionId : data.regionId,
         name : data.name,
         address : data.address,
         score : data.score,
-        createdAt : data.createdAt,
-        updatedAt : data.updatedAt,
     });
-    return joinMissionId;
+    return joinStoreId;
 }
 
 export const InsertReviewService = async (data) =>{
     console.log("body12", data);
     const joinReviewId = await addReview({
-        userid : data.userid,
-        storeid: data.storeid,
+        memberId : data.memberId,
+        storeId: data.storeId,
         body: data.body,
         score: data.score,
-        createdAt : data.createdAt,
     });
     return joinReviewId;
 };
@@ -67,9 +75,7 @@ export const InsertMissionService = async (data) => {
         storeId : data.storeId,
         reward : data.reward,
         deadline : data.deadline,
-        missionspec : data.missionspec,
-        createdAt : data.createdAt,
-        updatedAt : data.updatedAt,
+        missionSpec : data.missionSpec,
     });
     return joinMissionId;
 }
@@ -80,8 +86,30 @@ export const InsertMemberMissionService = async (data) => {
         memberId : data.memberId,
         missionId : data.missionId,
         status : data.status,
-        createdAt : data.createdAt,
-        updatedAt : data.updatedAt,
     });
     return joinMemberMissionId;
 }
+
+// 특정 가게의 리뷰 가져오는 서비스
+export const listStoreReviewsService = async (storeId,cursor) => {
+    const reviews = await getAllStoreReviews(storeId,cursor);
+    return responseFromReviewsDTO(reviews);
+};
+
+// 특정 멤버의 리뷰를 가져오는 서비스
+export const listMemberReviewsService = async (memberId,cursor) => {
+    const reviews = await getAllMemberReviews(memberId,cursor);
+    return responseFromMReviewsDTO(reviews);
+};
+
+// 특정 가게의 미션을 가져오는 서비스
+export const listStoreMissionService = async (storeId,cursor) => {
+    const missions = await getAllStoreMissions(storeId,cursor);
+    return responseFromMissionsDTO(missions);
+};
+
+// 특정 멤버의 미션을 가져오는 서비스
+export const listMemberMissionService = async (memberId,status,cursor) => {
+    const missions = await getAllMemberMissions(memberId,status,cursor);
+    return responseFromMMissionsDTO(missions);
+};
