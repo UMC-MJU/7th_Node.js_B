@@ -1,74 +1,61 @@
-import { pool } from "../db.config.js";
+import { prisma } from "../db.config.js";
 
 // 가게 추가
 export const addStore = async (data) => {
-    const conn = await pool.getConnection();
-
-    try {
-        const [result] = await pool.query(
-            `INSERT INTO store(region_id, name, address, score)VALUES (?, ?, ?, ?);`,
-            [
-                data.region_id,
-                data.name,
-                data.address,
-                data.score
-            ]
-        );
-        return result.insertId;
-
-    } catch (err) {
-        throw new Error(
-            `오류가 발생했어요. 요청 파라미터를 확인해주세요.(${err})`
-        );
-    } finally {
-        conn.release();
-    }
+    const created = await prisma.store.create({ data: data });
+    return created.id;
 }
 
 // 가게에 미션추가
 export const addStoreMission = async (data) => {
-    const conn = await pool.getConnection();
-
-    try {
-        const [result] = await pool.query(
-            `INSERT INTO mission(store_id, reward, deadline, mission_spec)VALUES (?, ?, ?, ?)`,
-            [
-                data.store_id,
-                data.reward,
-                data.deadline,
-                data.mission_spec
-            ]
-        );
-        return result.insertId;
-    } catch (err) {
-        throw new Error(
-            `오류가 발생했어요. 요청 파라미터를 확인해주세요.(${err})`
-        );
-    } finally {
-        conn.release();
-    }
-}
+    const created = await prisma.mission.create({ data: data });
+    return created.id;
+};
 
 // 가게에 리뷰추가
 export const addStoreReview = async (data) => {
-    const conn = await pool.getConnection();
-
-    try {
-        const [result] = await pool.query(
-            `INSERT INTO review(member_id, store_id, body, score)VALUES(?, ?, ?, ?)`,
-            [
-                data.member_id,
-                data.store_id,
-                data.body,
-                data.score
-            ]
-        );
-        return result.insertId;
-    } catch (err) {
-        throw new Error(
-            `오류가 발생했어요. 요청 파라미터를 확인해주세요.(${err})`
-        );
-    } finally {
-        conn.release();
+    const store = await prisma.store.findFirst({ where: { id: data.id } });
+    if (!store) {
+        return null;
     }
+    const created = await prisma.review.create({ data: data });
+    return created.id;
 }
+
+export const getStoreReviewList = async (storeId, cursor) => {
+    const reviews = await prisma.review.findMany({
+        select: {
+            id: true,
+            memberId: true,
+            storeId: true,
+            body: true,
+            score: true,
+            member: true,
+            store: true
+        },
+        where: { storeId: storeId, id: { gt: cursor } },
+        orderBy: { id: "asc" },
+        take: 5,
+    });
+    console.log(reviews, storeId);
+    return reviews;
+}
+
+export const getStoreMissionList = async (storeId, cursor) => {
+    const missions = await prisma.mission.findMany({
+        select: {
+            id: true,
+            storeId: true,
+            reward: true,
+            deadline: true,
+            missionSpec: true,
+            store: true
+        },
+        where: { storeId: storeId, id: { gt: cursor } },
+        orderBy: { id: "asc" },
+        take: 5,
+    });
+    return missions;
+};
+
+

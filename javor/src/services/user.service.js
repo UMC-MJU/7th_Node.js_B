@@ -1,4 +1,10 @@
-import { responseFromUser, responseFromUserMission } from "../dtos/user.dto.js";
+import {
+    responseFromUser,
+    responseFromUserMission,
+    responseFromUserReviews,
+    responseFromUserMissionOngoing,
+    responseFromUserMissionComplete,
+} from "../dtos/user.dto.js";
 import {
     addUser,
     getUser,
@@ -6,7 +12,10 @@ import {
     setPreference,
     addUserMission,
     getUserMission,
-
+    getMissionId,
+    getUserReviewList,
+    getUserOngoingMissionList,
+    patchUserMissionComplete
 } from "../repositories/user.repository.js";
 
 export const userSignUp = async (data) => {
@@ -15,8 +24,8 @@ export const userSignUp = async (data) => {
         gender: data.gender,
         age: data.age,
         address: data.address,
-        spec_address: data.spec_address,
-        phone_num: data.phone_num,
+        specAddress: data.specAddress,
+        phoneNum: data.phoneNum,
         status: data.status,
         email: data.email,
         point: data.point,
@@ -56,4 +65,22 @@ export const userAddMission = async (data) => {
         {
             UserMission
         });
+};
+
+export const userReviewList = async (memberId, cursor) => {
+    const reviews = await getUserReviewList(memberId, cursor);
+    return responseFromUserReviews(reviews);
+};
+
+export const userOngoingMissionList = async (memberId, status, cursor) => {
+    const missions = await getUserOngoingMissionList(memberId, status, cursor);
+    return responseFromUserMissionOngoing(missions);
+};
+
+export const userMissionToComplete = async (data, memberId, missionId) => {
+    const memberMissionId = await getMissionId(memberId, missionId);
+    const missionComplete = await patchUserMissionComplete(data.status, memberMissionId);
+    return responseFromUserMissionComplete({
+        missionComplete
+    });
 };
