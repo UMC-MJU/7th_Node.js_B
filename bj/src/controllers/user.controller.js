@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { bodyToUser, InsertStoreDTO, InsertReviewDTO, InsertMissionDTO ,InsertMemberMissionDTO} from "../dtos/user.dto.js";
-import { userSignUp, InsertStoreService, InsertReviewService, InsertMissionService ,InsertMemberMissionService, listStoreReviewsService} from "../services/user.service.js";
+import { userSignUp, InsertStoreService, InsertReviewService, InsertMissionService ,InsertMemberMissionService} from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
   console.log("회원가입을 요청했습니다!");
@@ -64,19 +64,5 @@ export const InsertMemberMissionController = async (req, res, next) => {
   } catch (error){
     console.error("Error occurred while creating member_mission: ", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: '멤버가 미션을 추가하던 중 오류가 발생했습니다.' });
-  }
-};
-
-// 가게에 속한 모든 리뷰를 조회 컨트롤러
-export const handleListStoreReviews = async (req, res, next) => {
-  try{
-    const reviews = await listStoreReviewsService(
-      parseInt(req.params.storeId),
-      typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
-    );
-    res.status(StatusCodes.OK).success(reviews);
-  } catch (error){
-    console.error("Error occurred while finding reviews: ", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: '가게에 속한 리뷰를 조회하던 중 오류가 발생했습니다.' });
   }
 };

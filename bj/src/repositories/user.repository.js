@@ -188,15 +188,3 @@ export const addMemberMission = async (data) => {
       conn.release();
   };
 }
-
-// 가게에 속한 리뷰들을 조회하는 api
-export const getAllStoreReviews = async (storeId, cursor) => {
-  const reviews = await prisma.memberStoreReview.findMany({
-    select: { id: true, content: true, store: true, user: true },
-    where: { storeId: storeId, id: { gt: cursor } },
-    orderBy: { id: "asc" },
-    take: 5,
-  });
-
-  return reviews;
-};
