@@ -1,7 +1,7 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import { handleUserSignUp,InsertStoreController, InsertReviewController, InsertMissionController, InsertMemberMissionController} from "./controllers/user.controller.js";
+import { handleUserSignUp,InsertStoreController, InsertReviewController, InsertMissionController, InsertMemberMissionController, GetListStoreReviewsController} from "./controllers/user.controller.js";
 
 dotenv.config();
 
@@ -17,9 +17,13 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+// 회원 가입 api
 app.post("/api/v1/users/signup", handleUserSignUp);
 
+// 가게를 생성하는 api
 app.post("/api/v1/store", InsertStoreController);
+
+// 리뷰를 생성하는 api
 app.post("/api/v1/review", InsertReviewController);
 
 // 가게의 미션 생성하기
@@ -27,6 +31,9 @@ app.post("/api/v1/mission", InsertMissionController);
 
 // 가게의 미션을 멤버가 도전 중인 미션에 추가
 app.post("/api/v1/member/mission", InsertMemberMissionController);
+
+// 가게의 리뷰를 다 가져오는 api
+app.get("/api/v1/stores/:storeId/reviews", GetListStoreReviewsController);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

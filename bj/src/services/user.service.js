@@ -1,4 +1,4 @@
-import { responseFromUser } from "../dtos/user.dto.js";
+import { responseFromUser ,responseFromReviewsDTO} from "../dtos/user.dto.js";
 import {
     addUser,
     getUser,
@@ -8,16 +8,19 @@ import {
     addReview,
     addMission,
     addMemberMission,
+    getAllStoreReviews,
 } from "../repositories/user.repository.js";
 
 export const userSignUp = async (data) => {
+    console.log("body12:", data)
     const joinUserId = await addUser({
         email: data.email,
+        age: data.age,
         name: data.name,
         gender: data.gender,
         address: data.address,
-        detailAddress: data.detailAddress,
-        phoneNumber: data.phoneNumber,
+        specAddress: data.specAddress,
+        phoneNum: data.phoneNum,
     });
 
     if (joinUserId === null) {
@@ -85,3 +88,8 @@ export const InsertMemberMissionService = async (data) => {
     });
     return joinMemberMissionId;
 }
+
+export const listStoreReviewsService = async (storeId) => {
+    const reviews = await getAllStoreReviews(storeId);
+    return responseFromReviewsDTO(reviews);
+};
