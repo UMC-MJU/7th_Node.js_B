@@ -1,9 +1,21 @@
-import { responseFromStore, responseFromStoreMission, responseFromStoreReview } from "../dtos/store.dto.js";
-import { addStore, addStoreMission, addStoreReview } from "../repositories/store.repository.js";
+import {
+    responseFromStore,
+    responseFromStoreMission,
+    responseFromStoreReview,
+    responseFromStoreReviewGet,
+    responseFromStoreMissionGet
+} from "../dtos/store.dto.js";
+import {
+    addStore,
+    addStoreMission,
+    addStoreReview,
+    getStoreReviewList,
+    getStoreMissionList
+} from "../repositories/store.repository.js";
 
 export const storeAdd = async (data) => {
     const joinAddStore = await addStore({
-        region_id: data.region_id,
+        regionId: data.regionId,
         name: data.name,
         address: data.address,
         score: data.score
@@ -22,10 +34,10 @@ export const storeAdd = async (data) => {
 
 export const storeMissionAdd = async (data) => {
     const joinAddStoreMission = await addStoreMission({
-        store_id: data.store_id,
+        storeId: data.storeId,
         reward: data.reward,
         deadline: data.deadline,
-        mission_spec: data.mission_spec
+        missionSpec: data.missionSpec
     });
     if (joinAddStoreMission === null) {
         throw new Error("이미 미션에 추가한 가게입니다.");
@@ -40,8 +52,8 @@ export const storeMissionAdd = async (data) => {
 
 export const storeReviewAdd = async (data) => {
     const joinAddStoreReview = await addStoreReview({
-        member_id: data.member_id,
-        store_id: data.store_id,
+        memberId: data.memberId,
+        storeId: data.storeId,
         body: data.body,
         score: data.score
     });
@@ -55,4 +67,13 @@ export const storeReviewAdd = async (data) => {
     )
 }
 
+export const storeReviewList = async (storeId, cursor) => {
+    const reviews = await getStoreReviewList(storeId, cursor);
+    return responseFromStoreReviewGet(reviews);
+};
+
+export const storeMissionList = async (storeId, cursor) => {
+    const missions = await getStoreMissionList(storeId, cursor);
+    return responseFromStoreMissionGet(missions);
+}
 

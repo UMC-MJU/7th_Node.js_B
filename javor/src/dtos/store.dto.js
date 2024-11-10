@@ -1,7 +1,7 @@
 export const bodyToStore = (body) => {
 
     return {
-        region_id: body.region_id,
+        regionId: body.regionId,
         name: body.name,
         address: body.address,
         score: body.score,
@@ -19,10 +19,10 @@ export const bodyToStoreMission = (body) => {
     const deadline = new Date(body.deadline);
 
     return {
-        store_id: body.store_id,
+        storeId: body.storeId,
         reward: body.reward,
         deadline,
-        mission_spec: body.mission_spec,
+        missionSpec: body.missionSpec,
     };
     ;
 }
@@ -37,8 +37,8 @@ export const responseFromStoreMission = (body) => {
 export const bodyToStoreReview = (body) => {
 
     return {
-        member_id: body.member_id,
-        store_id: body.store_id,
+        memberId: body.memberId,
+        storeId: body.storeId,
         body: body.body,
         score: body.score,
     };
@@ -48,5 +48,24 @@ export const responseFromStoreReview = (body) => {
 
     return {
         body: body.ReviewStore
+    };
+};
+
+// 가게 리뷰 불러오기
+export const responseFromStoreReviewGet = (reviews) => {
+    return {
+        data: reviews,
+        pagination: {
+            cursor: reviews.length ? reviews[reviews.length - 1].id : null,
+        },
+    };
+};
+
+export const responseFromStoreMissionGet = (missions) => {
+    return {
+        data: missions,
+        pagination: {
+            cursor: missions.length ? missions[missions.length - 1].id : null,
+        },
     };
 };
