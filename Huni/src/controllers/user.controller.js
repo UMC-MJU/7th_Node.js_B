@@ -1,6 +1,15 @@
 import { StatusCodes } from "http-status-codes";
 import { bodyToUser, bodyToReview, bodyToMission, bodyToUserMission } from "../dtos/user.dto.js";
-import { userSignUp, ReviewMake, MissionMake, UserMissionMake } from "../services/user.service.js";
+import { 
+    userSignUp, 
+    ReviewMake, 
+    MissionMake, 
+    UserMissionMake, 
+    listStoreReviews,
+    listUserReviews,
+    listStoreMissions,
+    listUserMissions
+} from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
   console.log("회원가입을 요청했습니다!");
@@ -56,3 +65,56 @@ export const handleUserMission = async(req, res, next) =>{
         console.error(error);
     }
 }
+
+//가게 리뷰 받아오는 api
+export const handleListStoreReviews = async (req, res, next) => {
+    try{
+        const reviews = await listStoreReviews(
+            parseInt(req.params.storeId),
+            typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
+        );
+        res.status(StatusCodes.OK).json({result: reviews});
+    }catch(error){
+        console.error(error);
+    }
+};
+
+//유저 리뷰 get api
+export const handleUserReviews = async (req, res, next) => {
+    try{
+        const reviews = await listUserReviews(
+            parseInt(req.params.memberId),
+            typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
+        );
+        res.status(StatusCodes.OK).json({result: reviews});
+    }catch(error){
+        console.error(error);
+    }
+};
+
+//가게 미션 get api
+export const handleListStoreMissions = async (req, res, next) => {
+    try{
+        const missions = await listStoreMissions(
+            parseInt(req.params.storeId),
+            typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
+        );
+        res.status(StatusCodes.OK).json({result: missions});
+    }catch(error){
+        console.error(error);
+    }
+};
+
+//유저 미션(진행중) get api
+export const handleListUserMissions = async (req, res, next) => {
+    try{
+        const missions = await listUserMissions(
+            parseInt(req.params.memberId),
+            req.params.status,
+            typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
+        );
+        res.status(StatusCodes.OK).json({result: missions});
+    }catch(error){
+        console.error(error);
+    }
+};

@@ -1,52 +1,36 @@
-import { pool } from "../db.config.js";
+import { prisma } from "../db.config.js";
 
 // User 데이터 삽입
 export const addUser = async (data) => {
-  const conn = await pool.getConnection();
-
   try {
-    const [confirm] = await pool.query(
-      `SELECT EXISTS(SELECT 1 FROM member WHERE email = ?) as isExistEmail;`,
-      data.email
-    );
+    const existingUser = await prisma.member.findFirst({
+      where: { email: data.email },
+    });
 
-    if (confirm[0].isExistEmail) {
+    if (existingUser) {
       return null;
     }
 
-    const [result] = await pool.query(
-      `INSERT INTO member (email, name, gender, address, spec_address, phone_num) VALUES (?, ?, ?, ?, ?, ?);`,
-      [
-        data.email,
-        data.name,
-        data.gender,
-        // data.birth,
-        data.address,
-        data.detailAddress,
-        data.phoneNumber,
-      ]
-    );
+    const newUser = await prisma.member.create({
+        data: data,
+    });
 
-    return result.insertId;
+    return newUser.id;
   } catch (err) {
     throw new Error(
       `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
     );
-  } finally {
-    conn.release();
   }
 };
 
 // 사용자 정보 얻기
 export const getUser = async (userId) => {
-  const conn = await pool.getConnection();
-
   try {
-    const [user] = await pool.query(`SELECT * FROM member WHERE id = ?;`, userId);
+    const user = await prisma.member.findUnique({
+      where: { id: userId },
+    });
 
-    console.log(user);
-
-    if (user.length == 0) {
+    if (!user) {
       return null;
     }
 
@@ -55,136 +39,221 @@ export const getUser = async (userId) => {
     throw new Error(
       `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
     );
-  } finally {
-    conn.release();
   }
 };
 
 // 음식 선호 카테고리 매핑
 export const setPreference = async (userId, foodCategoryId) => {
-  const conn = await pool.getConnection();
-
   try {
-    await pool.query(
-      `INSERT INTO member_prefer (category_id, member_id) VALUES (?, ?);`,
-      [foodCategoryId, userId]
-    );
-
+    await prisma.memberPrefer.create({
+      data: {
+        memberId: userId,
+        foodCategoryId: foodCategoryId,
+      },
+    });
     return;
   } catch (err) {
     throw new Error(
       `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
     );
-  } finally {
-    conn.release();
   }
 };
 
 // 사용자 선호 카테고리 반환
 export const getUserPreferencesByUserId = async (data) => {
-  const conn = await pool.getConnection();
-
+  const { userId: memberId } = data;
   try {
-    const [preferences] = await pool.query(
-      "SELECT ufc.id, ufc.category_id, ufc.member_id, fcl.name " +
-        "FROM member_prefer ufc JOIN food_category fcl on ufc.category_id = fcl.id " +
-        "WHERE ufc.member_id = ? ORDER BY ufc.category_id ASC;",
-      userId
-    );
+    const preferences = await prisma.memberPrefer.findMany({
+          select: {
+            id: true,
+            memberId: true,
+            foodCategoryId: true,
+            foodCategory: true,
+          },
+          where:{memberId : memberId},
+      orderBy: { foodCategoryId: 'asc' },
+    });
 
     return preferences;
   } catch (err) {
     throw new Error(
       `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
     );
-  } finally {
-    conn.release();
   }
 };
 
 //
 export const setReviewinStore = async (data) => {
-    const conn = await pool.getConnection();
-    console.log(data.storeid);
     try{
-
-        // storeId가 존재하는지 확인하는 쿼리
-        const [storeExist] = await conn.query(
-            "SELECT EXISTS(SELECT 1 FROM store WHERE id = ?) as isExist",
-            [data.storeid]
-        );
-        console.log(storeExist);
-
-        // storeId가 존재하지 않으면 null 반환
-        if (!storeExist[0].isExist) {
-            return null;
-        }
-        // 데이터 삽입
-        const[result] = await pool.query(
-            "INSERT INTO review (member_id, store_id, body, score, created_at) VALUES ( ?, ?, ?, ?, NOW());",
-            [
-                data.userid,
-                data.storeid,
-                data.body,
-                data.score,
-            ]
-        );
-        return result.insertId;
+      const storeExist = await prisma.store.findUnique({
+        where: { id: data.storeid },
+      });
+  
+      if (!storeExist) {
+        return null;
+      }
+  
+      const result = await prisma.review.create({
+        data: {
+          memberId: data.userid,
+          storeId: data.storeid,
+          body: data.body,
+          score: data.score,
+          createdAt: new Date(),
+        },
+      });
+  
+      return result.id;
     } catch(err){
         throw new Error(`오류가 발생하였습니다.`);
-    } finally{
-        conn.release();
     }
 };
 
 export const setMissioninStore = async (data) => {
-    const conn = await pool.getConnection();
     try{
         // storeId가 존재하는지 확인하는 쿼리
-        const [storeExist] = await conn.query(
-            "SELECT EXISTS(SELECT 1 FROM store WHERE id = ?) as isExist",
-            [data.storeid]
-        );
-
-        // storeId가 존재하지 않으면 null 반환
-        if (!storeExist[0].isExist) {
-            return null;
+        const storeExist = await prisma.store.findUnique({
+          where: { id: data.storeid },
+        });
+    
+        if (!storeExist) {
+          return null;
         }
-
-        const [result] = await pool.query(
-            `INSERT INTO mission (store_id, reward, deadline, mission_spec) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 7 DAY), ?);`,
-            [
-                data.storeid,
-                data.reward,
-                data.missionspec,
-            ]
-        );
-        return result.insertId;
+    
+        const result = await prisma.mission.create({
+          data: {
+            storeId: data.storeid,
+            reward: data.reward,
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7일 후
+            missionSpec: data.missionspec,
+          },
+        });
+    
+        return result.id;
 
     } catch(err){
         throw new Error(`오류가 발생하였습니다.`)
-    } finally{
-        conn.release();
     }
-
 }
 
 export const setMissioninUser = async (data) => {
-    const conn = await pool.getConnection();
-
     try{
-        const [result] = await pool.query(
-            `INSERT INTO member_mission (member_id, mission_id, status, created_at) VALUES (?, ?, ?, NOW());`,
-            [
-                data.userid,
-                data.missionid,
-                data.status,
-            ]
-        );
-        return result.insertId;
+      const result = await prisma.memberMission.create({
+        data: {
+          memberId: data.userid,
+          missionId: data.missionid,
+          status: data.status,
+          createdAt: new Date(),
+        },
+      });
+  
+      return result.id;
     } catch(err){
         throw new Error(`오류가 발생하였습니다.`)
-    } finally{
-        conn.release();
     }
 }
+
+//가게 리뷰
+export const getAllStoreReviews = async (storeId,cursor) => {
+  try{
+    const reviews = await prisma.review.findMany({
+      select: {
+        id: true,
+        body: true,
+        member: true,
+        store: true,
+        memberId: true,
+        storeId: true,
+        score: true,
+      },
+      where: { storeId: storeId
+        , id: { gt: cursor } 
+    },
+      orderBy: { id: "asc" },
+      take: 5,
+    });
+
+    return reviews;
+  } catch(err){
+    console.error(err)
+    throw new Error("레포지토리 에러");
+  }
+};
+
+//유저 리뷰 받아오기
+export const getAllUserReviews = async (memberId,cursor) => {
+  try{
+    const reviews = await prisma.review.findMany({
+      select: {
+        id: true,
+        body: true,
+        member: true,
+        store: true,
+        memberId: true,
+        storeId: true,
+        score: true,
+      },
+      where: { memberId: memberId
+        , id: { gt: cursor } 
+    },
+      orderBy: { id: "asc" },
+      take: 5,
+    });
+
+    return reviews;
+  } catch(err){
+    console.error(err)
+    throw new Error("레포지토리 에러");
+  }
+};
+
+//가게 미션 get api
+export const getAllStoreMissions = async (storeId,cursor) => {
+  try{
+    const missions = await prisma.mission.findMany({
+      select: {
+        id: true,
+        store: true,
+        storeId: true,
+        reward: true,
+        deadline: true,
+        missionSpec: true,
+      },
+      where: { storeId: storeId
+        , id: { gt: cursor } 
+    },
+      orderBy: { id: "asc" },
+      take: 5,
+    });
+
+    return missions;
+  } catch(err){
+    console.error(err)
+    throw new Error("레포지토리 에러");
+  }
+};
+
+//유저 미션 get api
+export const getAllUserMissions = async (memberId, status,cursor) => {
+  try{
+    const missions = await prisma.memberMission.findMany({
+      select: {
+        id: true,
+        mission: true,
+        missionId: true,
+        status: true,
+      },
+      where: { memberId: memberId,
+        status: status
+        , id: { gt: cursor } 
+    },
+      orderBy: { id: "asc" },
+      take: 5,
+    });
+
+    return missions;
+  } catch(err){
+    console.error(err)
+    throw new Error("레포지토리 에러");
+  }
+};
