@@ -22,10 +22,11 @@ export const getRegionByRegionId = async (regionId) => {
 // 가게 리뷰 추가
 // 리뷰 데이터 삽입
 export const addStoreReview = async (data) => {
-    const store = await prisma.store.findFirst({ where: { id: data.id } });
+    const store = await prisma.store.findFirst({ where: { id: data.storeId } });
     if (!store) {
         return null;
     }
+    console.log(store)
     const created = await prisma.review.create({ data: data });
     return created.id;
 };

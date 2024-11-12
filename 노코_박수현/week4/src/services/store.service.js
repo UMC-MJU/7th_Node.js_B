@@ -7,6 +7,10 @@ import {
     responseFromMissions,
 } from "../dtos/store.dto.js";;
 import {
+    NoBodyStoreError,
+    AlreadyChallengingError
+} from "../errors.js";
+import {
     addStore,
     getStore,
     getRegionByRegionId,
@@ -51,7 +55,7 @@ export const storeReviewAddition = async (data) => {
     });
 
     if (reviewId === null) {
-        throw new Error("가게가 존재하지 않습니다.");
+        throw new NoBodyStoreError("가게가 존재하지 않습니다.", data);
     }
 
     for (const reviewImage of data.reviewImages) {
@@ -94,7 +98,7 @@ export const storeMissionChallengeAddition = async (data) => {
     });
 
     if (memMissionId === null) {
-        throw new Error("이미 도전 중입니다.");
+        throw new AlreadyChallengingError("이미 도전 중입니다.", data);
     }
 
     const missionChallenge = await getStoreMissionChallenge(memMissionId);

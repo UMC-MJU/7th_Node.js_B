@@ -5,7 +5,6 @@ import { prisma } from "../db.config.js";
 export const addUser = async (data) => {
     const member = await prisma.member.findFirst({ where: { email: data.email } });
     if (member) {
-        console.log(member)
         return null;
     }
 
