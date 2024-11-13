@@ -48,6 +48,11 @@ export const getUserPreferencesByUserId = async (memberId) => {
 // 유저 약관 동의
 // 약관 동의 매핑
 export const setUserAgree = async (memberId, termsId) => {
+    const member = await prisma.member.findFirst({ where: { id: memberId } });
+    const terms = await prisma.terms.findFirst({ where: { id: termsId } });
+    if (!member || !terms) {
+        return null;
+    }
     await prisma.memberAgree.create({
         data: {
             memberId: memberId,
@@ -78,11 +83,13 @@ export const getAllUserReviews = async (memberId, cursor) => {
         orderBy: { id: "asc" },
         take: 5,
     });
-
+    if (!reviews[0]) {
+        return null;
+    }
     return reviews;
 };
 
-// 내가 작성한 리뷰 목록 불러오기
+// 내가 진행 중인 미션 목록 불러오기
 export const getAllUserMissions = async (memberId, status, cursor) => {
     const missions = await prisma.memberMission.findMany({
         select: {
@@ -97,18 +104,24 @@ export const getAllUserMissions = async (memberId, status, cursor) => {
         orderBy: { id: "asc" },
         take: 5,
     });
+    if (!missions[0]) {
+        return null;
+    }
     return missions;
 };
 
 // 내가 진행 중인 미션을 진행 완료로 바꾸기
 // 유저미션id 반환
-export const getMemberMissionId = async (memberId, missionId) => {
+export const getMemberMissionId = async (memberId, missionId, status) => {
     const memberMission = await prisma.memberMission.findFirst({
         where: {
             memberId: memberId,
             missionId: missionId
         }
     });
+    if (memberMission.status === status) {
+        return null
+    }
     return memberMission.id;
 }
 // 진행완료로 변경

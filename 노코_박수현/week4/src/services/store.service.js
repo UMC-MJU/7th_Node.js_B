@@ -8,7 +8,9 @@ import {
 } from "../dtos/store.dto.js";;
 import {
     NoBodyStoreError,
-    AlreadyChallengingError
+    AlreadyChallengingError,
+    NoBodyRegionError,
+    NobodyGetValuesError
 } from "../errors.js";
 import {
     addStore,
@@ -34,7 +36,9 @@ export const storeAddition = async (data) => {
         address: data.address,
         score: data.score,
     });
-
+    if (storeId === null) {
+        throw new NoBodyRegionError("지역이 존재하지 않습니다.", data);
+    }
     const store = await getStore(storeId);
     const region = await getRegionByRegionId(data.regionId);
 
@@ -80,7 +84,9 @@ export const storeMissionAddition = async (data) => {
         deadline: data.deadline,
         missionSpec: data.missionSpec,
     });
-
+    if (missionId === null) {
+        throw new NoBodyStoreError("가게가 존재하지 않습니다.", data);
+    }
     const mission = await getStoreMission(missionId);
 
     return responseFromStoreMission(
@@ -112,11 +118,17 @@ export const storeMissionChallengeAddition = async (data) => {
 // 가게 리뷰 불러오기
 export const listStoreReviews = async (storeId, cursor) => {
     const reviews = await getAllStoreReviews(storeId, cursor);
+    if (reviews === null) {
+        throw new NobodyGetValuesError("가게 리뷰에 대한 정보를 불러올 수 없습니다.", storeId);
+    }
     return responseFromReviews(reviews);
 };
 
-// 가게 리뷰 불러오기
+// 가게 미션 불러오기
 export const listStoreMissions = async (storeId, cursor) => {
     const missions = await getAllStoreMissions(storeId, cursor);
+    if (missions === null) {
+        throw new NobodyGetValuesError("가게 미션에 대한 정보를 불러올 수 없습니다.", storeId);
+    }
     return responseFromMissions(missions);
 };

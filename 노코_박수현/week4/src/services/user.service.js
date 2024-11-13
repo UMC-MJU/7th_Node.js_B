@@ -4,7 +4,12 @@ import {
     responseFromReviews,
     responseFromMissions,
 } from "../dtos/user.dto.js";;
-import { DuplicateUserEmailError } from "../errors.js";
+import {
+    DuplicateUserEmailError,
+    SameMissionError,
+    NoBodyMemberOrTermsError,
+    NobodyGetValuesError
+} from "../errors.js";
 import {
     addUser,
     getUser,
@@ -54,7 +59,10 @@ export const userSignUp = async (data) => {
 export const userAgreeAddition = async (data) => {
 
     for (const condition of data.terms) {
-        await setUserAgree(data.memberId, condition);
+        const userAgree = await setUserAgree(data.memberId, condition);
+        if (userAgree === null) {
+            throw new NoBodyMemberOrTermsError("유저 또는 약관이 존재하지 않습니다.", data)
+        }
     }
 
     const userAgree = await getUserAgree(data.memberId);
@@ -67,18 +75,27 @@ export const userAgreeAddition = async (data) => {
 // 내가 작성한 리뷰 목록 불러오기
 export const listUserReviews = async (memberId, cursor) => {
     const reviews = await getAllUserReviews(memberId, cursor);
+    if (reviews === null) {
+        throw new NobodyGetValuesError("내가 작성한 리뷰에 대한 정보를 불러올 수 없습니다.", memberId);
+    }
     return responseFromReviews(reviews);
 };
 
 // 내가 진행 중인 미션 목록 불러오기
 export const listUserMissions = async (memberId, status, cursor) => {
     const missions = await getAllUserMissions(memberId, status, cursor);
+    if (missions === null) {
+        throw new NobodyGetValuesError(`내가 ${status}인 미션에 대한 정보를 불러올 수 없습니다.`, memberId);
+    }
     return responseFromMissions(missions);
 };
 
 // 내가 진행 중인 미션을 진행 완료로 바꾸기
 export const CompleteUserMission = async (data, memberId, missionId) => {
-    const memberMissionId = await getMemberMissionId(memberId, missionId)
+    const memberMissionId = await getMemberMissionId(memberId, missionId, data.status)
+    if (memberMissionId === null) {
+        throw new SameMissionError("요청한 상태가 이미 되어있는 미션입니다.", data);
+    }
     const missionComplete = await patchUserMissionComplete(data.status, memberMissionId);
     return responseFromMissions({
         missionComplete
