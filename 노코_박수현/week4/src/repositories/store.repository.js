@@ -3,6 +3,10 @@ import { prisma } from "../db.config.js";
 // 가게 추가
 // 가게 데이터 삽입
 export const addStore = async (data) => {
+    const region = await prisma.region.findFirst({ where: { id: data.regionId } });
+    if (!region) {
+        return null;
+    }
     const created = await prisma.store.create({ data: data });
     return created.id;
 };
@@ -22,7 +26,7 @@ export const getRegionByRegionId = async (regionId) => {
 // 가게 리뷰 추가
 // 리뷰 데이터 삽입
 export const addStoreReview = async (data) => {
-    const store = await prisma.store.findFirst({ where: { id: data.id } });
+    const store = await prisma.store.findFirst({ where: { id: data.storeId } });
     if (!store) {
         return null;
     }
@@ -65,6 +69,10 @@ export const getStoreReviewImageByReviewId = async (reviewId) => {
 // 가게 미션 추가
 // 가게 미션 데이터 삽입
 export const addStoreMission = async (data) => {
+    const store = await prisma.store.findFirst({ where: { id: data.storeId } });
+    if (!store) {
+        return null;
+    }
     const created = await prisma.mission.create({ data: data });
     return created.id;
 };
@@ -85,7 +93,6 @@ export const addStoreMissionChallenge = async (data) => {
         }
     });
     if (memMission) {
-        console.log(memMission)
         return null;
     }
     const created = await prisma.memberMission.create({ data: data });
@@ -114,7 +121,9 @@ export const getAllStoreReviews = async (storeId, cursor) => {
         orderBy: { id: "asc" },
         take: 5,
     });
-
+    if (!reviews[0]) {
+        return null;
+    }
     return reviews;
 };
 
@@ -133,6 +142,8 @@ export const getAllStoreMissions = async (storeId, cursor) => {
         orderBy: { id: "asc" },
         take: 5,
     });
-
+    if (!missions[0]) {
+        return null;
+    }
     return missions;
 };
