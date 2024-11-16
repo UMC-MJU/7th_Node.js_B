@@ -61,7 +61,6 @@ export const setPreference = async (userId, foodCategoryId) => {
 
 // 사용자 선호 카테고리 반환
 export const getUserPreferencesByUserId = async (data) => {
-  const { userId: memberId } = data;
   try {
     const preferences = await prisma.memberPrefer.findMany({
           select: {
