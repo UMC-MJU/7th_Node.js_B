@@ -36,7 +36,8 @@ export const bodyToUserAddMission = (body) => {
 
 export const responseFromUserMission = (body) => {
   return {
-    body: body.UserMission
+    memberId: body.memberId,
+    missionId: body.missionId,
   };
 };
 
