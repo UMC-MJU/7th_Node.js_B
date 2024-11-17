@@ -20,55 +20,79 @@ import {
 } from "../services/store.service.js";
 
 export const handleStoreAdd = async (req, res, next) => {
+    try {
+        console.log("가게를 추가합니다.");
+        console.log("body:", req.body);
 
-    console.log("가게를 추가합니다.");
-    console.log("body:", req.body);
+        const storeData = bodyToStore(req.body);
+        const newStore = await storeAdd(storeData);
 
-    const storeData = bodyToStore(req.body);
-    const newStore = await storeAdd(storeData);
+        return res.status(StatusCodes.OK).success(newStore);;
+    } catch (err) {
+        console.error("가게 추가 오류");
+        return next(err);
+    }
 
-    res.status(StatusCodes.OK).json({ result: newStore });
 
 }
 
 export const handleStoreMissionAdd = async (req, res, next) => {
+    try {
+        console.log("가게에 미션을 추가합니다.");
+        console.log("body:", req.body);
 
-    console.log("가게에 미션을 추가합니다.");
-    console.log("body:", req.body);
+        const storeMissionData = bodyToStoreMission(req.body);
+        const newStoreMission = await storeMissionAdd(storeMissionData);
 
-    const storeMissionData = bodyToStoreMission(req.body);
-    const newStoreMission = await storeMissionAdd(storeMissionData);
-
-    res.status(StatusCodes.OK).json({ result: newStoreMission });
+        return res.status(StatusCodes.OK).success(newStoreMission);
+    } catch (err) {
+        console.error("가게 미션 추가 오류");
+        return next(err);
+    }
 
 }
 
 export const handleStoreReviewAdd = async (req, res, next) => {
+    try {
+        console.log("가게에 리뷰를 추가합니다.");
+        console.log("body", req.body);
 
-    console.log("가게에 리뷰를 추가합니다.");
-    console.log("body", req.body);
+        const StoreReviewData = bodyToStoreReview(req.body);
+        const newStoreReview = await storeReviewAdd(StoreReviewData);
 
-    const StoreReviewData = bodyToStoreReview(req.body);
-    const newStoreReview = await storeReviewAdd(StoreReviewData);
-
-    res.status(StatusCodes.OK).json({ result: newStoreReview });
-
+        return res.status(StatusCodes.OK).success(newStoreReview);
+    } catch (err) {
+        console.error("가게 리뷰 추가 오류");
+        return next(err);
+    }
 }
 
 export const handleStoreReviewsList = async (req, res, next) => {
-    const reviews = await storeReviewList(
-        parseInt(req.params.storeId),
-        typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
-    );
-    res.status(StatusCodes.OK).success(reviews);
+    try {
+        const reviews = await storeReviewList(
+            parseInt(req.params.storeId),
+            typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
+        );
+        return res.status(StatusCodes.OK).success(reviews);
+    } catch (err) {
+        console.error("가게 리뷰를 불러올 수 없음");
+        return next(err);
+    }
+
 };
 
 export const handleStoreMissionsList = async (req, res, next) => {
-    const missions = await storeMissionList(
-        parseInt(req.params.storeId),
-        typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
-    );
-    res.status(StatusCodes.OK).json(missions);
+    try {
+        const missions = await storeMissionList(
+            parseInt(req.params.storeId),
+            typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
+        );
+        return res.status(StatusCodes.OK).success(missions);
+    } catch (err) {
+        console.error("가게 미션 목록을 불러올 수 없음");
+        return next(err);
+    }
+
 };
 
 

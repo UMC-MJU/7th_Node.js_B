@@ -5,6 +5,14 @@ import {
     responseFromUserMissionOngoing,
     responseFromUserMissionComplete,
 } from "../dtos/user.dto.js";
+
+import {
+    DuplicateUserEmailError,
+    DuplicateUserMissionError,
+    NotFoundUserMissionError,
+    NotFoundUserReviewError
+} from "../errors.js";
+
 import {
     addUser,
     getUser,
@@ -32,7 +40,7 @@ export const userSignUp = async (data) => {
     });
 
     if (joinUserId === null) {
-        throw new Error("이미 존재하는 이메일입니다.");
+        throw new DuplicateUserEmailError("이미 존재하는 이메일입니다.", data);
     }
 
     for (const preference of data.preferences) {
@@ -50,36 +58,53 @@ export const userSignUp = async (data) => {
 };
 
 export const userAddMission = async (data) => {
-    const joinUserMission = await addUserMission({
-        member_id: data.member_id,
-        mission_id: data.mission_id,
-        status: data.status
-    });
+    const joinUserMission = await addUserMission(data);
 
-    if (joinUserMission === null) {
-        throw new Error("이미 존재하는 미션입니다.");
+    if (joinUserMission && joinUserMission.duplicate) {
+        throw new DuplicateUserMissionError("중복된 미션입니다.", data);
     }
 
-    const UserMission = await getUserMission(joinUserMission);
-    return responseFromUserMission(
-        {
-            UserMission
-        });
+    if (!joinUserMission) {
+        throw new NotFoundUserMissionError("없는 미션입니다.", data);
+    }
+
+    /*const UserMissionData = await getUserMission(joinUserMission);
+    if (!UserMissionData) {
+        throw new NotFoundUserMissionError("미션 정보를 찾을 수 없습니다.", data);
+    }*/
+
+    return responseFromUserMission(UserMissionData);
 };
+
+
 
 export const userReviewList = async (memberId, cursor) => {
     const reviews = await getUserReviewList(memberId, cursor);
+
+    if (reviews === null) {
+        throw new NotFoundUserReviewError("리뷰정보가 없습니다.", memberId);
+    }
     return responseFromUserReviews(reviews);
 };
 
 export const userOngoingMissionList = async (memberId, status, cursor) => {
     const missions = await getUserOngoingMissionList(memberId, status, cursor);
+
+    if (missions === null) {
+        throw new NotFoundUserMissionError("미션정보를 찾을 수 없습니다.", memberId);
+    }
     return responseFromUserMissionOngoing(missions);
 };
 
 export const userMissionToComplete = async (data, memberId, missionId) => {
-    const memberMissionId = await getMissionId(memberId, missionId);
+    const memberMissionId = await getMissionId(memberId, missionId, data.status);
+
+    if (!memberMissionId) {
+        throw new NotFoundUserMissionError("미션 또는 멤버 정보가 없습니다.", data);
+    }
+
     const missionComplete = await patchUserMissionComplete(data.status, memberMissionId);
+
     return responseFromUserMissionComplete({
         missionComplete
     });

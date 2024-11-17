@@ -43,25 +43,50 @@ export const getUserPreferencesByUserId = async (memberId) => {
   return preferences;
 };
 
-// 유저 미션 추가
 export const addUserMission = async (data) => {
+  // 해당 missionId가 존재하는지 확인
+  const missionExists = await prisma.mission.findUnique({
+    where: {
+      id: data.missionId, // mission 테이블에서 missionId를 찾기
+    }
+  });
+
+  // missionId가 존재하지 않으면 null 반환
+  if (!missionExists) {
+    return null;  // 없는 미션 ID인 경우 처리
+  }
+
+  // 이미 도전 중인 미션이 있는지 확인
   const missionChallenge = await prisma.memberMission.findFirst({
     where: {
       missionId: data.missionId,
       memberId: data.memberId
     }
   });
+
   if (missionChallenge) {
-    return null;
+    return { duplicate: true };  // 이미 도전 중인 미션
   }
+
+  // 미션 추가
   const created = await prisma.memberMission.create({ data: data });
-  return created.id;
+  return created ? created.id : null;
 };
 
-export const getUserMission = async (missionChallengeId) => {
-  const missionChallenge = await prisma.memberMission.findFirstOrThrow({ where: { id: missionChallengeId } })
-  return missionChallenge;
+export const getUserMission = async (userMissionId) => {
+  // 사용자가 도전한 미션 정보 조회
+  const userMission = await prisma.memberMission.findUnique({
+    where: {
+      id: userMissionId
+    },
+    include: {
+      mission: true, // mission 테이블의 미션 정보도 포함해서 조회할 수 있음
+    }
+  });
+
+  return userMission;
 };
+
 
 // 내가 작성한 리뷰 목록 얻기
 export const getUserReviewList = async (memberId, cursor) => {
@@ -79,6 +104,11 @@ export const getUserReviewList = async (memberId, cursor) => {
     orderBy: { id: "asc" },
     take: 5,
   });
+
+  if (!reviews[0]) {
+    return null;
+  }
+
   return reviews;
 }
 
@@ -97,16 +127,25 @@ export const getUserOngoingMissionList = async (memberId, status, cursor) => {
     orderBy: { id: "asc" },
     take: 5,
   });
+
+  if (!ongoingMissions[0]) {
+    return null;
+  }
   return ongoingMissions;
 };
 
-export const getMissionId = async (memberId, missionId) => {
+export const getMissionId = async (memberId, missionId, status) => {
   const memberMission = await prisma.memberMission.findFirst({
     where: {
       memberId: memberId,
-      missionId: missionId
+      missionId: missionId,
     }
   });
+
+  if (!memberMission) {
+    return null;
+  }
+
   return memberMission.id;
 }
 // 진행완료로 변경
