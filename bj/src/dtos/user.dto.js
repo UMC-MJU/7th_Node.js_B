@@ -12,15 +12,15 @@ export const bodyToUser = (body) => {
     };
 };
 
-export const responseFromUser = (body) => {
-    console.log("body11:", body)
-    const preferFoods = body.preferences.map(
+export const responseFromUser = ({user,preferences}) => {
+    console.log("body11:", user)
+    const preferFoods = preferences.map(
         (preference) => preference.foodCategory.name
     );
     
     return {
-        email: body.email,
-        name: body.name,
+        email: user.email,
+        name: user.name,
         preferCategory: preferFoods,
     };
 };

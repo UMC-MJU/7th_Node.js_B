@@ -4,6 +4,16 @@ import { responseFromUser ,
     responseFromMReviewsDTO,
     responseFromMMissionsDTO,
 } from "../dtos/user.dto.js";
+import { DuplicateStoreMissionError,
+    DuplicateMemberReviewError,
+    DuplicateStoreReviewError,
+    DuplicateStoreError,
+    DuplicateMemberMissionError,
+    DuplicateReviewError,
+    DuplicateRegionError, 
+    DuplicateUserEmailError, 
+    DuplicateUserError, 
+    DuplicatePreferError } from "../errors.js";
 import {
     addUser,
     getUser,
@@ -32,7 +42,7 @@ export const userSignUp = async (data) => {
     });
 
     if (joinUserId === null) {
-        throw new Error("이미 존재하는 이메일입니다.");
+        throw new DuplicateUserEmailError("이미 존재하는 이메일입니다.", data);
     }
 
     for (const preference of data.preferences) {
@@ -40,8 +50,14 @@ export const userSignUp = async (data) => {
     }
 
     const user = await getUser(joinUserId);
-    const preferences = await getUserPreferencesByUserId(joinUserId);
+    if( user == null ){
+        throw new DuplicateUserError("user데이터 가져오는 것을 실패했습니다.", data);
+    }
 
+    const preferences = await getUserPreferencesByUserId(joinUserId);
+    if (preferences == null ){
+        throw new DuplicatePreferError("prefer데이터 가져오는 것을 실패했습니다.", data);
+    }
     return responseFromUser({
         user, preferences 
     });
@@ -55,6 +71,9 @@ export const InsertStoreService = async (data) => {
         address : data.address,
         score : data.score,
     });
+    if(joinStoreId == null){
+        throw new DuplicateRegionError("지역에 없는 가게 데이터 입니다.", data);
+    }
     return joinStoreId;
 }
 
@@ -66,6 +85,9 @@ export const InsertReviewService = async (data) =>{
         body: data.body,
         score: data.score,
     });
+    if(joinReviewId == null){
+        throw new DuplicateReviewError("해당하는 가게 데이터 or 멤버 데이터가 없습니다.", data);
+    }
     return joinReviewId;
 };
 
@@ -77,6 +99,9 @@ export const InsertMissionService = async (data) => {
         deadline : data.deadline,
         missionSpec : data.missionSpec,
     });
+    if(joinMissionId == null){
+        throw new DuplicateStoreError("해당가게가 없습니다.", data);
+    }
     return joinMissionId;
 }
 
@@ -87,29 +112,44 @@ export const InsertMemberMissionService = async (data) => {
         missionId : data.missionId,
         status : data.status,
     });
+    if(joinMemberMissionId == null){
+        throw new DuplicateMemberMissionError("해당가게 or 해당 멤버 데이터가 없습니다.", data);
+    }
     return joinMemberMissionId;
 }
 
 // 특정 가게의 리뷰 가져오는 서비스
 export const listStoreReviewsService = async (storeId,cursor) => {
     const reviews = await getAllStoreReviews(storeId,cursor);
+    if(reviews == null){
+        throw new DuplicateStoreReviewError("특정 가게의 리뷰를 가져오는데 실패했습니다 .", storeId);
+    }
     return responseFromReviewsDTO(reviews);
 };
 
 // 특정 멤버의 리뷰를 가져오는 서비스
 export const listMemberReviewsService = async (memberId,cursor) => {
     const reviews = await getAllMemberReviews(memberId,cursor);
+    if(reviews == null){
+        throw new DuplicateMemberReviewError("특정 멤버의 리뷰를 가져오는데 실패했습니다 .", memberId);
+    }
     return responseFromMReviewsDTO(reviews);
 };
 
 // 특정 가게의 미션을 가져오는 서비스
 export const listStoreMissionService = async (storeId,cursor) => {
     const missions = await getAllStoreMissions(storeId,cursor);
+    if(missions == null){
+        throw new DuplicateStoreMissionError("특정 가게의 미션을 가져오는데 실패했습니다 .", storeId);
+    }
     return responseFromMissionsDTO(missions);
 };
 
 // 특정 멤버의 미션을 가져오는 서비스
 export const listMemberMissionService = async (memberId,status,cursor) => {
     const missions = await getAllMemberMissions(memberId,status,cursor);
+    if(missions == null){
+        throw new DuplicateMemberReviewError("특정 멤버의 미션을 가져오는데 실패했습니다 .", memberId);
+    }
     return responseFromMMissionsDTO(missions);
 };
