@@ -119,8 +119,12 @@ export const getMemberMissionId = async (memberId, missionId, status) => {
             missionId: missionId
         }
     });
-    if (memberMission.status === status) {
-        return null
+
+    if (!memberMission) {
+        return { idError: true };
+    }
+    else if (memberMission.status === status) {
+        return { statusError: true }
     }
     return memberMission.id;
 }

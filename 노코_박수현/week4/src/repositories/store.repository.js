@@ -7,6 +7,7 @@ export const addStore = async (data) => {
     if (!region) {
         return null;
     }
+    console.log("aaa:", data)
     const created = await prisma.store.create({ data: data });
     return created.id;
 };

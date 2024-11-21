@@ -93,8 +93,11 @@ export const listUserMissions = async (memberId, status, cursor) => {
 // 내가 진행 중인 미션을 진행 완료로 바꾸기
 export const CompleteUserMission = async (data, memberId, missionId) => {
     const memberMissionId = await getMemberMissionId(memberId, missionId, data.status)
-    if (memberMissionId === null) {
+    if (memberMissionId.statusError === true) {
         throw new SameMissionError("요청한 상태가 이미 되어있는 미션입니다.", data);
+    }
+    if (memberMissionId.idError === true) {
+        throw new NobodyGetValuesError("미션을 찾을 수 없습니다", data);
     }
     const missionComplete = await patchUserMissionComplete(data.status, memberMissionId);
     return responseFromMissions({

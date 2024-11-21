@@ -38,7 +38,8 @@ export const bodyToUserAgree = (body) => {
 
 export const responseFromUserAgree = ({ userAgree }) => {
     return {
-        userAgree: userAgree,
+        memberId: userAgree.memberId,
+        termsId: userAgree.termsId
     };
 };
 
@@ -61,6 +62,8 @@ export const responseFromMissions = (missions) => {
         },
     };
 };
+
+// 내가 진행 중인 미션을 진행 완료로 바꾸기
 export const bodyToMissionComplete = (body) => {
 
     return {
