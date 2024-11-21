@@ -319,6 +319,19 @@ export const handleListUserMissions = async (req, res, next) => {
 export const handleUserMissionComplete = async (req, res, next) => {
   /*
 #swagger.summary = '내가 진행 중인 미션을 진행 완료로 바꾸기 API';
+ #swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            status: { type: "string" },
+          }
+        }
+      }
+    }
+  };
 #swagger.responses[200] = {
 description: "내가 진행 중인 미션을 진행 완료로 바꾸기 성공 응답",
 content: {
