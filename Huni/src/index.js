@@ -11,6 +11,8 @@ import {
   handleListStoreMissions,
   handleListUserMissions
 } from "./controllers/user.controller.js";
+import swaggerAutogen from "swagger-autogen";
+import swaggerUiExpress from "swagger-ui-express";
 
 dotenv.config();
 
@@ -36,7 +38,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors()); // cors 방식 허용
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://example.com']
+})); // cors 방식 허용
 app.use(express.static("public")); // 정적 파일 접근
 app.use(express.json()); // request의 본문을 json으로 해석할 수 있도록 함 (JSON 형태의 요청 body를 파싱하기 위함)
 app.use(express.urlencoded({ extended: false })); // 단순 객체 문자열 형태로 본문 데이터 해석
@@ -53,6 +57,40 @@ app.get("/api/v1/store/:storeId/reviews", handleListStoreReviews);
 app.get("/api/v1/users/:memberId/reviews", handleUserReviews);
 app.get("/api/v1/store/:storeId/missions", handleListStoreMissions);
 app.get("/api/v1/users/:memberId/:status/missions", handleListUserMissions);
+
+
+
+//swagger
+app.use(
+  "/docs",
+  swaggerUiExpress.serve,
+  swaggerUiExpress.setup({}, {
+    swaggerOptions: {
+      url: "/openapi.json",
+    },
+  })
+);
+
+app.get("/openapi.json", async (req, res, next) => {
+  // #swagger.ignore = true
+  const options = {
+    openapi: "3.0.0",
+    disableLogs: true,
+    writeOutputFile: false,
+  };
+  const outputFile = "/dev/null"; // 파일 출력은 사용하지 않습니다.
+  const routes = ["./src/index.js"];
+  const doc = {
+    info: {
+      title: "UMC 7th",
+      description: "UMC 7th Node.js 테스트 프로젝트입니다.",
+    },
+    host: "localhost:3000",
+  };
+
+  const result = await swaggerAutogen(options)(outputFile, routes, doc);
+  res.json(result ? result.data : null);
+});
 
 /**
  * 전역 오류를 처리하기 위한 미들웨어
