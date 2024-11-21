@@ -91,6 +91,20 @@ export const handleUserSignUp = async (req, res, next) => {
 export const handleUserAgreeAddition = async (req, res, next) => {
   /*
 #swagger.summary = '유저 약관 동의 API';
+#swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            memberId: { type: "number" },
+            terms: { type: "array", items: { type: "number" } }
+          }
+        }
+      }
+    }
+  };
 #swagger.responses[200] = {
 description: "유저 약관 동의 성공 응답",
 content: {
