@@ -121,7 +121,7 @@ export const handleAddUserMission = async (req, res, next) => {
       }
     };
 
-    #swagger.response[200] = {
+    #swagger.responses[200] = {
       description: "유저 미션 추가 성공 응답",
       content: {
         "application/json": {
@@ -252,7 +252,7 @@ export const handleUserReviewList = async (req, res, next) => {
       }
     };
 
-    #swagger.response[404] = {
+    #swagger.responses[404] = {
       description: "유저 리뷰 목록 조회 실패 응답 (리뷰가 없을 때)",
       content: {
         "application/json": {
