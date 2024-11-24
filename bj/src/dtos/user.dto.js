@@ -1,3 +1,4 @@
+//회원가입에 필요한 dto
 export const bodyToUser = (body) => {
     console.log("body11:", body)
     return {
@@ -11,7 +12,7 @@ export const bodyToUser = (body) => {
         preferences: body.preferences
     };
 };
-
+//회원가입에 필요한 dto
 export const responseFromUser = ({user,preferences}) => {
     console.log("body11:", user)
     const preferFoods = preferences.map(
@@ -87,7 +88,7 @@ export const responseFromMReviewsDTO = (reviews) => {
     };
 };
 
-// 특정 멤버의 미션을 가져오는데 필요한 DTO
+// 특정 가게의 미션을 가져오는데 필요한 DTO
 export const responseFromMissionsDTO = (missions) => {
     return {
         data: missions,
