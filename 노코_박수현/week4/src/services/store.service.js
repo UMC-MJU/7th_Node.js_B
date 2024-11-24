@@ -7,10 +7,9 @@ import {
     responseFromMissions,
 } from "../dtos/store.dto.js";;
 import {
-    NoBodyStoreError,
     AlreadyChallengingError,
-    NoBodyRegionError,
-    NobodyGetValuesError
+    ExceededCursorValue,
+    NotExistId
 } from "../errors.js";
 import {
     addStore,
@@ -37,7 +36,7 @@ export const storeAddition = async (data) => {
         score: data.score,
     });
     if (storeId === null) {
-        throw new NoBodyRegionError("지역이 존재하지 않습니다.", data);
+        throw new NotExistId("지역이 존재하지 않습니다.", data);
     }
     const store = await getStore(storeId);
     const region = await getRegionByRegionId(data.regionId);
@@ -58,8 +57,8 @@ export const storeReviewAddition = async (data) => {
         score: data.score,
     });
 
-    if (reviewId === null) {
-        throw new NoBodyStoreError("가게가 존재하지 않습니다.", data);
+    if (reviewId.idError === true) {
+        throw new NotExistId("가게 혹은 유저가 존재하지 않습니다.", data);
     }
 
     for (const reviewImage of data.reviewImages) {
@@ -85,7 +84,7 @@ export const storeMissionAddition = async (data) => {
         missionSpec: data.missionSpec,
     });
     if (missionId === null) {
-        throw new NoBodyStoreError("가게가 존재하지 않습니다.", data);
+        throw new NotExistId("가게가 존재하지 않습니다.", data);
     }
     const mission = await getStoreMission(missionId);
 
@@ -103,7 +102,10 @@ export const storeMissionChallengeAddition = async (data) => {
         status: data.status,
     });
 
-    if (memMissionId === null) {
+    if (memMissionId.idError === true) {
+        throw new NotExistId("미션 혹은 유저를 찾을 수 없습니다.", data);
+    }
+    else if (memMissionId.isChallenge === true) {
         throw new AlreadyChallengingError("이미 도전 중입니다.", data);
     }
 
@@ -118,8 +120,11 @@ export const storeMissionChallengeAddition = async (data) => {
 // 가게 리뷰 불러오기
 export const listStoreReviews = async (storeId, cursor) => {
     const reviews = await getAllStoreReviews(storeId, cursor);
-    if (reviews === null) {
-        throw new NobodyGetValuesError("가게 리뷰에 대한 정보를 불러올 수 없습니다.", storeId);
+    if (reviews.idError === true) {
+        throw new NotExistId("가게 리뷰에 대한 정보를 불러올 수 없습니다.", storeId);
+    }
+    else if (reviews.exceedCursor === true) {
+        throw new ExceededCursorValue("커서 값이 초과되었습니다.", cursor);
     }
     return responseFromReviews(reviews);
 };
@@ -127,8 +132,11 @@ export const listStoreReviews = async (storeId, cursor) => {
 // 가게 미션 불러오기
 export const listStoreMissions = async (storeId, cursor) => {
     const missions = await getAllStoreMissions(storeId, cursor);
-    if (missions === null) {
-        throw new NobodyGetValuesError("가게 미션에 대한 정보를 불러올 수 없습니다.", storeId);
+    if (missions.idError === true) {
+        throw new NotExistId("가게 미션에 대한 정보를 불러올 수 없습니다.", storeId);
+    }
+    else if (missions.exceedCursor === true) {
+        throw new ExceededCursorValue("커서 값이 초과되었습니다.", cursor);
     }
     return responseFromMissions(missions);
 };

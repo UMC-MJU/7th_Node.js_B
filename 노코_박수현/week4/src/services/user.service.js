@@ -6,9 +6,9 @@ import {
 } from "../dtos/user.dto.js";;
 import {
     DuplicateUserEmailError,
-    SameMissionError,
-    NoBodyMemberOrTermsError,
-    NobodyGetValuesError
+    DuplicateMissionError,
+    NotExistId,
+    ExceededCursorValue
 } from "../errors.js";
 import {
     addUser,
@@ -37,12 +37,15 @@ export const userSignUp = async (data) => {
         point: data.point,
     });
 
-    if (joinUserId === null) {
+    if (joinUserId.sameEmail) {
         throw new DuplicateUserEmailError("이미 존재하는 이메일입니다.", data);
     }
 
     for (const preference of data.preferences) {
-        await setPreference(joinUserId, preference);
+        const category = await setPreference(joinUserId, preference);
+        if (category.idError === true) {
+            throw new NotExistId("카테고리를 설정할 수 없습니다.", data);
+        }
     }
 
     const user = await getUser(joinUserId);
@@ -61,7 +64,7 @@ export const userAgreeAddition = async (data) => {
     for (const condition of data.terms) {
         const userAgree = await setUserAgree(data.memberId, condition);
         if (userAgree === null) {
-            throw new NoBodyMemberOrTermsError("유저 또는 약관이 존재하지 않습니다.", data)
+            throw new NotExistId("약관을 설정하지 못합니다.", data)
         }
     }
 
@@ -75,8 +78,11 @@ export const userAgreeAddition = async (data) => {
 // 내가 작성한 리뷰 목록 불러오기
 export const listUserReviews = async (memberId, cursor) => {
     const reviews = await getAllUserReviews(memberId, cursor);
-    if (reviews === null) {
-        throw new NobodyGetValuesError("내가 작성한 리뷰에 대한 정보를 불러올 수 없습니다.", memberId);
+    if (reviews.idError === true) {
+        throw new NotExistId("내가 작성한 리뷰에 대한 정보를 불러올 수 없습니다.", memberId);
+    }
+    else if (reviews.exceedCursor === true) {
+        throw new ExceededCursorValue("커서 값이 초과되었습니다.", cursor);
     }
     return responseFromReviews(reviews);
 };
@@ -84,8 +90,11 @@ export const listUserReviews = async (memberId, cursor) => {
 // 내가 진행 중인 미션 목록 불러오기
 export const listUserMissions = async (memberId, status, cursor) => {
     const missions = await getAllUserMissions(memberId, status, cursor);
-    if (missions === null) {
-        throw new NobodyGetValuesError(`내가 ${status}인 미션에 대한 정보를 불러올 수 없습니다.`, memberId);
+    if (missions.idError === true) {
+        throw new NotExistId(`내가 ${status}인 미션에 대한 정보를 불러올 수 없습니다.`, memberId);
+    }
+    else if (missions.exceedCursor === true) {
+        throw new ExceededCursorValue("커서 값이 초과되었습니다.", cursor);
     }
     return responseFromMissions(missions);
 };
@@ -93,8 +102,11 @@ export const listUserMissions = async (memberId, status, cursor) => {
 // 내가 진행 중인 미션을 진행 완료로 바꾸기
 export const CompleteUserMission = async (data, memberId, missionId) => {
     const memberMissionId = await getMemberMissionId(memberId, missionId, data.status)
-    if (memberMissionId === null) {
-        throw new SameMissionError("요청한 상태가 이미 되어있는 미션입니다.", data);
+    if (memberMissionId.statusError === true) {
+        throw new DuplicateMissionError("요청한 상태가 이미 되어있는 미션입니다.", data);
+    }
+    if (memberMissionId.idError === true) {
+        throw new NotExistId("멤버 미션을 찾을 수 없습니다.", data);
     }
     const missionComplete = await patchUserMissionComplete(data.status, memberMissionId);
     return responseFromMissions({

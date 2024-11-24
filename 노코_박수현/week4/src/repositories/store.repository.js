@@ -27,8 +27,9 @@ export const getRegionByRegionId = async (regionId) => {
 // 리뷰 데이터 삽입
 export const addStoreReview = async (data) => {
     const store = await prisma.store.findFirst({ where: { id: data.storeId } });
-    if (!store) {
-        return null;
+    const member = await prisma.member.findFirst({ where: { id: data.memberId } });
+    if (!(store && member)) {
+        return { idError: true };
     }
     const created = await prisma.review.create({ data: data });
     return created.id;
@@ -86,14 +87,19 @@ export const getStoreMission = async (missionId) => {
 // 가게 미션 도전 중인 미션에 추가
 // 가게 미션 도전 데이터 삽입
 export const addStoreMissionChallenge = async (data) => {
+    const member = await prisma.member.findFirst({ where: { id: data.memberId } });
+    const mission = await prisma.member.findFirst({ where: { id: data.missionId } });
     const memMission = await prisma.memberMission.findFirst({
         where: {
             missionId: data.missionId,
             memberId: data.memberId
         }
     });
+    if (!(member && mission)) {
+        return { idError: true };
+    }
     if (memMission) {
-        return null;
+        return { isChallenge: true };
     }
     const created = await prisma.memberMission.create({ data: data });
     return created.id;
@@ -122,7 +128,11 @@ export const getAllStoreReviews = async (storeId, cursor) => {
         take: 5,
     });
     if (!reviews[0]) {
-        return null;
+        const store = await prisma.store.findFirst({ where: { id: storeId } });
+        if (!store) {
+            return { idError: true }
+        }
+        return { exceedCursor: true };
     }
     return reviews;
 };
@@ -143,7 +153,11 @@ export const getAllStoreMissions = async (storeId, cursor) => {
         take: 5,
     });
     if (!missions[0]) {
-        return null;
+        const store = await prisma.store.findFirst({ where: { id: storeId } });
+        if (!store) {
+            return { idError: true }
+        }
+        return { exceedCursor: true };
     }
     return missions;
 };
