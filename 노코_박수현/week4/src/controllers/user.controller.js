@@ -54,7 +54,29 @@ export const handleUserSignUp = async (req, res, next) => {
     }
   };
   #swagger.responses[400] = {
-    description: "회원 가입 실패 응답",
+    description: "회원 가입 이메일 중복 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U003" },
+                reason: { type: "string" },
+                data: { type: "object" }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "회원 가입 찾을 수 없는 id 값 실패 응답",
     content: {
       "application/json": {
         schema: {
@@ -134,7 +156,7 @@ content: {
   }
 }
 };
-#swagger.responses[400] = {
+#swagger.responses[404] = {
   description: "유저 약관 동의 실패 응답",
   content: {
     "application/json": {
@@ -145,7 +167,7 @@ content: {
           error: {
             type: "object",
             properties: {
-              errorCode: { type: "string", example: "U006" },
+              errorCode: { type: "string", example: "U001" },
               reason: { type: "string" },
               data: { type: "object" }
             }
@@ -208,7 +230,7 @@ export const handleListUserReviews = async (req, res, next) => {
  }
 };
 #swagger.responses[400] = {
-    description: "내가 작성한 리뷰 목록 조회 실패 응답",
+    description: "내가 작성한 리뷰 목록 커서 초과 조회 실패 응답",
     content: {
       "application/json": {
         schema: {
@@ -218,7 +240,29 @@ export const handleListUserReviews = async (req, res, next) => {
             error: {
               type: "object",
               properties: {
-                errorCode: { type: "string", example: "U007" },
+                errorCode: { type: "string", example: "U002" },
+                reason: { type: "string" },
+                data: { type: "object" }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "내가 작성한 리뷰 목록 id 값 조회 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U001" },
                 reason: { type: "string" },
                 data: { type: "object" }
               }
@@ -281,7 +325,7 @@ export const handleListUserMissions = async (req, res, next) => {
   }
 };
 #swagger.responses[400] = {
-    description: "내가 진행 중인 미션 목록 조회 실패 응답",
+    description: "내가 진행 중인 미션 목록 조회 커서 초과 실패 응답",
     content: {
       "application/json": {
         schema: {
@@ -291,7 +335,29 @@ export const handleListUserMissions = async (req, res, next) => {
             error: {
               type: "object",
               properties: {
-                errorCode: { type: "string", example: "U007" },
+                errorCode: { type: "string", example: "U002" },
+                reason: { type: "string" },
+                data: { type: "object" }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "내가 진행 중인 미션 목록 조회 id 값 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U001" },
                 reason: { type: "string" },
                 data: { type: "object" }
               }
@@ -372,7 +438,7 @@ content: {
           error: {
             type: "object",
             properties: {
-              errorCode: { type: "string", example: "U005" },
+              errorCode: { type: "string", example: "U004" },
               reason: { type: "string" },
               data: { type: "object" }
             }
@@ -394,7 +460,7 @@ content: {
           error: {
             type: "object",
             properties: {
-              errorCode: { type: "string", example: "U007" },
+              errorCode: { type: "string", example: "U001" },
               reason: { type: "string" },
               data: { type: "object" }
             }

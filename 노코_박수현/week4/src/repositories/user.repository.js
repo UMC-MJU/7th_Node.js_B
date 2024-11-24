@@ -5,7 +5,7 @@ import { prisma } from "../db.config.js";
 export const addUser = async (data) => {
     const member = await prisma.member.findFirst({ where: { email: data.email } });
     if (member) {
-        return null;
+        return { sameEmail: true };
     }
 
     const created = await prisma.member.create({ data: data });
@@ -21,12 +21,17 @@ export const getUser = async (memberId) => {
 
 // 음식 선호 카테고리 매핑
 export const setPreference = async (memberId, categoryId) => {
+    const category = await prisma.category.findFirst({ where: { id: categoryId } });
+    if (!category) {
+        return { idError: true }
+    }
     await prisma.memberPrefer.create({
         data: {
             memberId: memberId,
             categoryId: categoryId,
         },
     });
+    return { idError: false }
 };
 
 // 사용자 선호 카테고리 반환
@@ -84,7 +89,11 @@ export const getAllUserReviews = async (memberId, cursor) => {
         take: 5,
     });
     if (!reviews[0]) {
-        return null;
+        const member = await prisma.member.findFirst({ where: { id: memberId } });
+        if (!member) {
+            return { idError: true }
+        }
+        return { exceedCursor: true };
     }
     return reviews;
 };
@@ -105,7 +114,11 @@ export const getAllUserMissions = async (memberId, status, cursor) => {
         take: 5,
     });
     if (!missions[0]) {
-        return null;
+        const member = await prisma.member.findFirst({ where: { id: memberId } });
+        if (!member) {
+            return { idError: true }
+        }
+        return { exceedCursor: true };
     }
     return missions;
 };

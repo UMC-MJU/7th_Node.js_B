@@ -65,7 +65,7 @@ export const handleStoreAddition = async (req, res, next) => {
  }
  }
  };
- #swagger.responses[400] = {
+ #swagger.responses[404] = {
  description: "가게 추가 실패 응답",
  content: {
   "application/json": {
@@ -76,7 +76,7 @@ export const handleStoreAddition = async (req, res, next) => {
         error: {
           type: "object",
           properties: {
-            errorCode: { type: "string", example: "U004" },
+            errorCode: { type: "string", example: "U001" },
             reason: { type: "string" },
             data: { type: "object" }
           }
@@ -150,7 +150,7 @@ schema: {
 }
 }
 };
-#swagger.responses[400] = {
+#swagger.responses[404] = {
 description: "가게 리뷰 추가 실패 응답",
 content: {
 "application/json": {
@@ -161,7 +161,7 @@ content: {
      error: {
        type: "object",
        properties: {
-         errorCode: { type: "string", example: "U002" },
+         errorCode: { type: "string", example: "U001" },
          reason: { type: "string" },
          data: { type: "object" }
        }
@@ -234,7 +234,7 @@ schema: {
 }
 }
 };
-#swagger.responses[400] = {
+#swagger.responses[404] = {
 description: "가게 미션 추가 실패 응답",
 content: {
 "application/json": {
@@ -245,7 +245,7 @@ content: {
      error: {
        type: "object",
        properties: {
-         errorCode: { type: "string", example: "U002" },
+         errorCode: { type: "string", example: "U001" },
          reason: { type: "string" },
          data: { type: "object" }
        }
@@ -316,7 +316,7 @@ success: {
 }
 };
 #swagger.responses[400] = {
-description: "가게 미션 도전 중인 미션에 추가 실패 응답",
+description: "가게 미션 도전 중인 미션에 추가 이미 도전 중으로 실패 응답",
 content: {
 "application/json": {
 schema: {
@@ -326,7 +326,29 @@ properties: {
   error: {
     type: "object",
     properties: {
-      errorCode: { type: "string", example: "U003" },
+      errorCode: { type: "string", example: "U005" },
+      reason: { type: "string" },
+      data: { type: "object" }
+    }
+  },
+  success: { type: "object", nullable: true, example: null }
+}
+}
+}
+}
+};
+#swagger.responses[404] = {
+description: "가게 미션 도전 중인 미션에 추가 id 값 실패 응답",
+content: {
+"application/json": {
+schema: {
+type: "object",
+properties: {
+  resultType: { type: "string", example: "FAIL" },
+  error: {
+    type: "object",
+    properties: {
+      errorCode: { type: "string", example: "U001" },
       reason: { type: "string" },
       data: { type: "object" }
     }
@@ -389,7 +411,7 @@ export const handleListStoreReviews = async (req, res, next) => {
   }
 };
 #swagger.responses[400] = {
-  description: "상점 리뷰 목록 조회 실패 응답",
+  description: "상점 리뷰 목록 조회 커서 초과 실패 응답",
   content: {
     "application/json": {
       schema: {
@@ -399,7 +421,29 @@ export const handleListStoreReviews = async (req, res, next) => {
           error: {
             type: "object",
             properties: {
-              errorCode: { type: "string", example: "U007" },
+              errorCode: { type: "string", example: "U002" },
+              reason: { type: "string" },
+              data: { type: "object" }
+            }
+          },
+          success: { type: "object", nullable: true, example: null }
+        }
+      }
+    }
+  }
+};
+#swagger.responses[404] = {
+  description: "상점 리뷰 목록 조회 id 값 실패 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          resultType: { type: "string", example: "FAIL" },
+          error: {
+            type: "object",
+            properties: {
+              errorCode: { type: "string", example: "U001" },
               reason: { type: "string" },
               data: { type: "object" }
             }
@@ -461,7 +505,7 @@ export const handleListStoreMissions = async (req, res, next) => {
   }
 };
 #swagger.responses[400] = {
-  description: "가게 미션 불러오기 조회 실패 응답",
+  description: "가게 미션 불러오기 조회 커서 초과 실패 응답",
   content: {
     "application/json": {
       schema: {
@@ -471,7 +515,29 @@ export const handleListStoreMissions = async (req, res, next) => {
           error: {
             type: "object",
             properties: {
-              errorCode: { type: "string", example: "U007" },
+              errorCode: { type: "string", example: "U002" },
+              reason: { type: "string" },
+              data: { type: "object" }
+            }
+          },
+          success: { type: "object", nullable: true, example: null }
+        }
+      }
+    }
+  }
+};
+#swagger.responses[404] = {
+  description: "가게 미션 불러오기 조회 id 값 실패 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          resultType: { type: "string", example: "FAIL" },
+          error: {
+            type: "object",
+            properties: {
+              errorCode: { type: "string", example: "U001" },
               reason: { type: "string" },
               data: { type: "object" }
             }
