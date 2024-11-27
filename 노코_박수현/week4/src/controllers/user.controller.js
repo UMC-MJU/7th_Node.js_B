@@ -1,10 +1,7 @@
 import { StatusCodes } from "http-status-codes";
-import { bodyToUser, bodyToUserAgree, bodyToMissionComplete } from "../dtos/user.dto.js";
-import { userSignUp, userAgreeAddition, listUserReviews, listUserMissions, CompleteUserMission } from "../services/user.service.js";
-
-export const testhandle = async (req, res, next) => {
-  throw new Error();
-}
+import { bodyToUser, bodyToUserAgree, bodyToMissionComplete, bodyToSocial } from "../dtos/user.dto.js";
+import { userSignUp, userAgreeAddition, listUserReviews, listUserMissions, CompleteUserMission, userSocialSignUp } from "../services/user.service.js";
+import { NotSocialError } from "../errors.js";
 // 유저 회원가입
 export const handleUserSignUp = async (req, res, next) => {
   /*
@@ -120,7 +117,6 @@ export const handleUserAgreeAddition = async (req, res, next) => {
         schema: {
           type: "object",
           properties: {
-            memberId: { type: "number" },
             terms: { type: "array", items: { type: "number" } }
           }
         }
@@ -144,7 +140,6 @@ content: {
               items: {
                 type: "object",
                 properties: {
-                  memberId: { type: "number"},
                   termsId: { type: "number" },
                 }
               }
@@ -155,6 +150,28 @@ content: {
     }
   }
 }
+};
+#swagger.responses[401] = {
+  description: "유저 약관 동의 로그인으로 인한 실패 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          resultType: { type: "string", example: "FAIL" },
+          error: {
+            type: "object",
+            properties: {
+              errorCode: { type: "string", example: "U006" },
+              reason: { type: "string" },
+              data: { type: "object" }
+            }
+          },
+          success: { type: "object", nullable: true, example: null }
+        }
+      }
+    }
+  }
 };
 #swagger.responses[404] = {
   description: "유저 약관 동의 실패 응답",
@@ -180,10 +197,13 @@ content: {
 };
 */
   try {
+    if (!req.user) {
+      throw new NotSocialError("소셜 로그인을 해주세요.", req.user)
+    }
     console.log("약관 동의를 요청했습니다!");
     console.log("body:", req.body); // 값이 잘 들어오나 확인하기 위한 테스트용
 
-    const user = await userAgreeAddition(bodyToUserAgree(req.body));
+    const user = await userAgreeAddition(bodyToUserAgree(req.user, req.body));
     res.status(StatusCodes.OK).success(user);
   } catch (err) {
     return next(err)
@@ -251,6 +271,28 @@ export const handleListUserReviews = async (req, res, next) => {
       }
     }
   };
+  #swagger.responses[401] = {
+  description: "내가 작성한 리뷰 목록 로그인으로 인한 실패 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          resultType: { type: "string", example: "FAIL" },
+          error: {
+            type: "object",
+            properties: {
+              errorCode: { type: "string", example: "U006" },
+              reason: { type: "string" },
+              data: { type: "object" }
+            }
+          },
+          success: { type: "object", nullable: true, example: null }
+        }
+      }
+    }
+  }
+};
   #swagger.responses[404] = {
     description: "내가 작성한 리뷰 목록 id 값 조회 실패 응답",
     content: {
@@ -276,8 +318,11 @@ export const handleListUserReviews = async (req, res, next) => {
 */
 
   try {
+    if (!req.user) {
+      throw new NotSocialError("소셜 로그인을 해주세요.", req.user)
+    }
     const reviews = await listUserReviews(
-      parseInt(req.params.memberId),
+      parseInt(req.user.id),
       typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
     );
     res.status(StatusCodes.OK).success(reviews);
@@ -346,6 +391,28 @@ export const handleListUserMissions = async (req, res, next) => {
       }
     }
   };
+    #swagger.responses[401] = {
+  description: "내가 진행 중인 미션 목록 조회 로그인으로 인한 실패 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          resultType: { type: "string", example: "FAIL" },
+          error: {
+            type: "object",
+            properties: {
+              errorCode: { type: "string", example: "U006" },
+              reason: { type: "string" },
+              data: { type: "object" }
+            }
+          },
+          success: { type: "object", nullable: true, example: null }
+        }
+      }
+    }
+  }
+};
   #swagger.responses[404] = {
     description: "내가 진행 중인 미션 목록 조회 id 값 실패 응답",
     content: {
@@ -370,8 +437,11 @@ export const handleListUserMissions = async (req, res, next) => {
   };
 */
   try {
+    if (!req.user) {
+      throw new NotSocialError("소셜 로그인을 해주세요.", req.user)
+    }
     const missions = await listUserMissions(
-      parseInt(req.params.memberId),
+      parseInt(req.user.id),
       req.query.status,
       typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
     );
@@ -449,6 +519,28 @@ content: {
     }
   }
 };
+#swagger.responses[401] = {
+  description: "내가 진행 중인 미션을 진행 완료로 바꾸기 로그인으로 인한 실패 응답",
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          resultType: { type: "string", example: "FAIL" },
+          error: {
+            type: "object",
+            properties: {
+              errorCode: { type: "string", example: "U006" },
+              reason: { type: "string" },
+              data: { type: "object" }
+            }
+          },
+          success: { type: "object", nullable: true, example: null }
+        }
+      }
+    }
+  }
+};
 #swagger.responses[404] = {
   description: "내가 진행 중인 미션을 진행 완료로 바꾸기 미션을 찾을 수 없음으로 인한 실패 응답",
   content: {
@@ -473,8 +565,11 @@ content: {
 };
 */
   try {
+    if (!req.user) {
+      throw new NotSocialError("소셜 로그인을 해주세요.", req.user)
+    }
     const missions = await CompleteUserMission(bodyToMissionComplete(req.body),
-      parseInt(req.params.memberId),
+      parseInt(req.user.id),
       parseInt(req.params.missionId)
     );
     res.status(StatusCodes.OK).success(missions);
@@ -482,3 +577,108 @@ content: {
     return next(err)
   }
 };
+
+export const handleUserSocialSignUp = async (req, res, next) => {
+  /*
+  #swagger.summary = '소셜 회원 가입 API';
+  #swagger.requestBody = {
+    required: true,
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            id: { type : "number" },
+            name: { type: "string" },
+            gender: { type: "string" },
+            age: { type: "number" },
+            address: { type: "string" },
+            specAddress: { type: "string" },
+            phoneNum: { type: "string" },
+            status: { type: "string" },
+            socialType: {type: "string"},
+            email: { type: "string" },
+            point: { type: "number" },
+            preferences: { type: "array", items: { type: "number" } }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[200] = {
+    description: "소셜 회원가입 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "SUCCESS" },
+            error: { type: "object", nullable: true, example: null },
+            success: {
+              type: "object",
+              properties: {
+                email: { type: "string" },
+                name: { type: "string" },
+                preferCategory: { type: "array", items: { type: "string" } }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[401] = {
+    description: "소셜로 접근하지 않음 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U006" },
+                reason: { type: "string" },
+                data: { type: "object" }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "카테고리 id 값 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U001" },
+                reason: { type: "string" },
+                data: { type: "object" }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  */
+  try {
+    if (!req.user) {
+      throw new NotSocialError("소셜 로그인을 해주세요.", req.user)
+    }
+    const user = await userSocialSignUp(bodyToSocial(req.user, req.body));
+    res.status(StatusCodes.OK).success(user)
+  } catch (err) {
+    return next(err);
+  }
+}

@@ -20,7 +20,8 @@ import {
     getAllUserReviews,
     getAllUserMissions,
     getMemberMissionId,
-    patchUserMissionComplete
+    patchUserMissionComplete,
+    patchSocialUser
 } from "../repositories/user.repository.js";
 
 // 유저 회원가입
@@ -62,13 +63,13 @@ export const userSignUp = async (data) => {
 export const userAgreeAddition = async (data) => {
 
     for (const condition of data.terms) {
-        const userAgree = await setUserAgree(data.memberId, condition);
+        const userAgree = await setUserAgree(data.user, condition);
         if (userAgree === null) {
             throw new NotExistId("약관을 설정하지 못합니다.", data)
         }
     }
 
-    const userAgree = await getUserAgree(data.memberId);
+    const userAgree = await getUserAgree(data.user.id);
     return responseFromUserAgree(
         {
             userAgree,
@@ -112,4 +113,25 @@ export const CompleteUserMission = async (data, memberId, missionId) => {
     return responseFromMissions({
         missionComplete
     });
+};
+
+export const userSocialSignUp = async (data) => {
+    await patchSocialUser(data);
+
+    for (const preference of data.preferences) {
+        const category = await setPreference(data.id, preference);
+        if (category.idError === true) {
+            throw new NotExistId("카테고리를 설정할 수 없습니다.", data);
+        }
+    }
+
+    const user = await getUser(data.id);
+    const preferences = await getUserPreferencesByUserId(data.id);
+
+    console.log(user);
+    return responseFromUser(
+        {
+            user,
+            preferences
+        });
 };

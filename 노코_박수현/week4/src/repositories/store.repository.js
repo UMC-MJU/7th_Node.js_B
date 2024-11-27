@@ -27,8 +27,7 @@ export const getRegionByRegionId = async (regionId) => {
 // 리뷰 데이터 삽입
 export const addStoreReview = async (data) => {
     const store = await prisma.store.findFirst({ where: { id: data.storeId } });
-    const member = await prisma.member.findFirst({ where: { id: data.memberId } });
-    if (!(store && member)) {
+    if (!store) {
         return { idError: true };
     }
     const created = await prisma.review.create({ data: data });
@@ -87,7 +86,6 @@ export const getStoreMission = async (missionId) => {
 // 가게 미션 도전 중인 미션에 추가
 // 가게 미션 도전 데이터 삽입
 export const addStoreMissionChallenge = async (data) => {
-    const member = await prisma.member.findFirst({ where: { id: data.memberId } });
     const mission = await prisma.member.findFirst({ where: { id: data.missionId } });
     const memMission = await prisma.memberMission.findFirst({
         where: {
@@ -95,7 +93,7 @@ export const addStoreMissionChallenge = async (data) => {
             memberId: data.memberId
         }
     });
-    if (!(member && mission)) {
+    if (!mission) {
         return { idError: true };
     }
     if (memMission) {

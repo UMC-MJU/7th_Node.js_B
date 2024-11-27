@@ -19,7 +19,6 @@ export const responseFromUser = ({ user, preferences }) => {
     const preferFoods = preferences.map(
         (preference) => preference.category.name
     );
-
     return {
         email: user.email,
         name: user.name,
@@ -28,10 +27,10 @@ export const responseFromUser = ({ user, preferences }) => {
 };
 
 // 유저 약관 동의
-export const bodyToUserAgree = (body) => {
+export const bodyToUserAgree = (user, body) => {
 
     return {
-        memberId: body.memberId,
+        user: user,
         terms: body.terms,
     };
 };
@@ -73,5 +72,22 @@ export const bodyToMissionComplete = (body) => {
 export const responseFromMissionComplete = (missionComplete) => {
     return {
         data: missionComplete,
+    };
+};
+
+export const bodyToSocial = (user, body) => {
+    return {
+        id: user.id || body.id,
+        name: user.name || body.name,
+        gender: user.gender || body.gender,
+        age: user.age || body.age,
+        address: user.address || body.address,
+        specAddress: user.specAddress || body.specAddress,
+        phoneNum: user.phoneNum || body.phoneNum,
+        status: user.status || body.status,
+        email: user.email || body.email,
+        socialType: user.socialType || body.socialType,
+        point: user.point,
+        preferences: body.preferences,
     };
 };

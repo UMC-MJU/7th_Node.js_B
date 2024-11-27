@@ -47,3 +47,13 @@ export class DuplicateMissionError extends Error {
         this.data = data;
     }
 }
+
+export class NotSocialError extends Error {
+    errorCode = "U006";
+
+    constructor(reason, data) {
+        super(reason);
+        this.reason = reason;
+        this.data = data;
+    }
+}
