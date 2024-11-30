@@ -19,10 +19,10 @@ export const responseFromStore = ({ store, region }) => {
 };
 
 // 가게 리뷰 추가
-export const bodyToStoreReview = (body) => {
+export const bodyToStoreReview = (user, body) => {
 
     return {
-        memberId: body.memberId,
+        user: user,
         storeId: body.storeId,
         body: body.body,
         score: body.score,
@@ -61,9 +61,9 @@ export const responseFromStoreMission = ({ mission }) => {
 };
 
 // 가게 미션 도전 중인 미션에 추가
-export const bodyToStoreMissionChallenge = (body) => {
+export const bodyToStoreMissionChallenge = (user, body) => {
     return {
-        memberId: body.memberId,
+        user: user,
         missionId: body.missionId,
         status: body.status,
     };

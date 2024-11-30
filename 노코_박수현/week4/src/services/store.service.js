@@ -51,7 +51,7 @@ export const storeAddition = async (data) => {
 // 가게 리뷰 추가
 export const storeReviewAddition = async (data) => {
     const reviewId = await addStoreReview({
-        memberId: data.memberId,
+        memberId: data.user.id,
         storeId: data.storeId,
         body: data.body,
         score: data.score,
@@ -97,7 +97,7 @@ export const storeMissionAddition = async (data) => {
 // 가게 미션 도전 중인 미션에 추가
 export const storeMissionChallengeAddition = async (data) => {
     const memMissionId = await addStoreMissionChallenge({
-        memberId: data.memberId,
+        memberId: data.user.id,
         missionId: data.missionId,
         status: data.status,
     });

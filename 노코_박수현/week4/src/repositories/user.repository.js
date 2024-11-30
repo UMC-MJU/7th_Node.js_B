@@ -52,15 +52,14 @@ export const getUserPreferencesByUserId = async (memberId) => {
 
 // 유저 약관 동의
 // 약관 동의 매핑
-export const setUserAgree = async (memberId, termsId) => {
-    const member = await prisma.member.findFirst({ where: { id: memberId } });
+export const setUserAgree = async (user, termsId) => {
     const terms = await prisma.terms.findFirst({ where: { id: termsId } });
-    if (!member || !terms) {
+    if (!terms) {
         return null;
     }
     await prisma.memberAgree.create({
         data: {
-            memberId: memberId,
+            memberId: user.id,
             termsId: termsId,
         },
     });
@@ -89,10 +88,6 @@ export const getAllUserReviews = async (memberId, cursor) => {
         take: 5,
     });
     if (!reviews[0]) {
-        const member = await prisma.member.findFirst({ where: { id: memberId } });
-        if (!member) {
-            return { idError: true }
-        }
         return { exceedCursor: true };
     }
     return reviews;
@@ -114,10 +109,6 @@ export const getAllUserMissions = async (memberId, status, cursor) => {
         take: 5,
     });
     if (!missions[0]) {
-        const member = await prisma.member.findFirst({ where: { id: memberId } });
-        if (!member) {
-            return { idError: true }
-        }
         return { exceedCursor: true };
     }
     return missions;
@@ -152,4 +143,24 @@ export const patchUserMissionComplete = async (status, id) => {
         }
     });
     return missionComplete;
+}
+
+export const patchSocialUser = async (data) => {
+    await prisma.member.update({
+        where: {
+            id: data.id
+        },
+        data: {
+            name: data.name,
+            gender: data.gender,
+            age: data.age,
+            address: data.address,
+            specAddress: data.specAddress,
+            phoneNum: data.phoneNum,
+            status: data.status,
+            email: data.email,
+            socialType: data.socialType,
+            point: data.point,
+        }
+    });
 }

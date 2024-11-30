@@ -13,6 +13,7 @@ import {
   listStoreReviews,
   listStoreMissions,
 } from "../services/store.service.js";
+import { NotSocialError } from "../errors.js";
 
 // 가게 추가
 export const handleStoreAddition = async (req, res, next) => {
@@ -110,7 +111,6 @@ export const handleStoreReviewAddition = async (req, res, next) => {
       schema: {
         type: "object",
         properties: {
-          memberId: { type: "number" },
           storeId: { type: "number" },
           body: { type: "string"},
           score: {type: "number", format: "float"},
@@ -150,6 +150,28 @@ schema: {
 }
 }
 };
+#swagger.responses[401] = {
+    description: "가게 리뷰 소셜로 접근하지 않음 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U006" },
+                reason: { type: "string" },
+                data: { type: "object" }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
 #swagger.responses[404] = {
 description: "가게 리뷰 추가 실패 응답",
 content: {
@@ -174,10 +196,13 @@ content: {
 };
 */
   try {
+    if (!req.user) {
+      throw new NotSocialError("소셜 로그인을 해주세요.", req.user)
+    }
     console.log("가게에 리뷰 추가를 요청했습니다!");
     console.log("body:", req.body);
 
-    const store = await storeReviewAddition(bodyToStoreReview(req.body));
+    const store = await storeReviewAddition(bodyToStoreReview(req.user, req.body));
     res.status(StatusCodes.OK).success(store);
   } catch (err) {
     return next(err)
@@ -279,7 +304,6 @@ export const handleStoreMissionChallengeAddition = async (req, res, next) => {
       schema: {
         type: "object",
         properties: {
-          memberId: { type: "number" },
           missionId: { type: "number" },
           status: {type: "string" }
         }
@@ -337,6 +361,28 @@ properties: {
 }
 }
 };
+#swagger.responses[401] = {
+    description: "가게 미션 도전 중인 미션에 추가 소셜로 접근하지 않음 실패 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "U006" },
+                reason: { type: "string" },
+                data: { type: "object" }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
 #swagger.responses[404] = {
 description: "가게 미션 도전 중인 미션에 추가 id 값 실패 응답",
 content: {
@@ -361,10 +407,13 @@ properties: {
 };
 */
   try {
+    if (!req.user) {
+      throw new NotSocialError("소셜 로그인을 해주세요.", req.user)
+    }
     console.log("가게의 미션을 도전 중인 미션에 추가를 요청했습니다!");
     console.log("body:", req.body);
 
-    const store = await storeMissionChallengeAddition(bodyToStoreMissionChallenge(req.body));
+    const store = await storeMissionChallengeAddition(bodyToStoreMissionChallenge(req.user, req.body));
     res.status(StatusCodes.OK).success(store);
   } catch (err) {
     return next(err)
