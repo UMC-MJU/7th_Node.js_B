@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { bodyToUser, bodyToReview, bodyToMission, bodyToUserMission } from "../dtos/user.dto.js";
+import { bodyToUser, bodyToReview, bodyToMission, bodyToUserMission, bodyToUserUpdate } from "../dtos/user.dto.js";
 import { 
     userSignUp, 
     ReviewMake, 
@@ -8,7 +8,8 @@ import {
     listStoreReviews,
     listUserReviews,
     listStoreMissions,
-    listUserMissions
+    listUserMissions,
+    updateUser
 } from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
@@ -451,3 +452,79 @@ export const handleListUserMissions = async (req, res, next) => {
         console.error(error);
     }
 };
+
+// 회원정보 수정
+export const handleModifyUser = async(req,res,next) => {
+  /*
+    #swagger.summary = '회원 정보 수정 API';
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              email: { type: "string" },
+              name: { type: "string" },
+              gender: { type: "string" },
+              address: { type: "string" },
+              specAddress: { type: "string" },
+              phoneNum: { type: "string" }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[200] = {
+      description: "회원 정보 수정 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error: { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  email: { type: "string" },
+                  name: { type: "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[400] = {
+      description: "회원 가입 실패 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "U001" },
+                  reason: { type: "string" },
+                  data: { type: "object" }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+  */
+  try{
+    console.log("회원 정보를 수정합니다.");
+    console.log("body:", req.body);
+    const member = await updateUser(bodyToUserUpdate(req.body));
+    res.status(StatusCodes.OK).success(member);
+  } catch(err){
+    return next(err);
+  }
+}

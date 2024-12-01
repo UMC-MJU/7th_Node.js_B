@@ -73,3 +73,16 @@ export const responseFromMissions = (missions) => {
         },
     };
 };
+
+//회원정보를 수정
+export const bodyToUserUpdate = (body) => {
+    return {
+        name : body.name,
+        gender : body.gender,
+        age : body.age,
+        address : body.address,
+        specaddress : body.spec_address,
+        phonenum : body.phone_number,
+        email : body.email,
+    };
+}
