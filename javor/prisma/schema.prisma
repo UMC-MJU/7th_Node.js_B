@@ -174,3 +174,12 @@ model MemberAgree {
 
   @@map("member_agree")
 }
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @db.LongText
+  expiresAt DateTime @map("expires_at")
+
+  @@map("session")
+}

@@ -12,6 +12,28 @@ export const addUser = async (data) => {
   return created.id;
 };
 
+//이메일로 사용자 찾기
+export const getUserByEmail = async (email) => {
+  return await prisma.member.findFirst({ where: { email } });
+};
+
+// 사용자 정보 업데이트(이메일이 이미 존재하는 경우)
+export const updateUser = async (email, data) => {
+  const updated = await prisma.member.update({
+    where: { email },
+    data: {
+      name: data.name ?? undefined,
+      gender: data.gender ?? undefined,
+      age: data.age ?? undefined,
+      address: data.address ?? undefined,
+      specAddress: data.specAddress ?? undefined,
+      phoneNum: data.phoneNum ?? undefined,
+      status: data.status ?? undefined,
+    },
+  });
+  return updated;
+};
+
 // 사용자 정보 얻기
 export const getUser = async (memberId) => {
   const member = await prisma.member.findFirstOrThrow({ where: { id: memberId } });

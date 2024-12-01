@@ -15,6 +15,8 @@ import {
 
 import {
     addUser,
+    getUserByEmail,
+    updateUser,
     getUser,
     getUserPreferencesByUserId,
     setPreference,
@@ -27,6 +29,17 @@ import {
 } from "../repositories/user.repository.js";
 
 export const userSignUp = async (data) => {
+    //이메일로 기존의 사용자인지 확인
+    const existingUser = await getUserByEmail(data.email);
+
+    if (existingUser) {
+        // 이메일이 이미 존재하면 사용자 정보 갱신
+        const updatedUser = await updateUser(data.email, data);
+        const preferences = await getUserPreferencesByUserId(existingUser.id);
+        return responseFromUser({ user: updatedUser, preferences });
+    }
+
+    //새 사용자 생성
     const joinUserId = await addUser({
         name: data.name,
         gender: data.gender,
