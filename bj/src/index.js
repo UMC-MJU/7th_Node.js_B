@@ -17,12 +17,13 @@ import { handleUserSignUp,
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import session from "express-session";
 import passport from "passport";
-import { googleStrategy } from "./auth.config.js";
+import { googleStrategy, naverStrategy } from "./auth.config.js";
 import { prisma } from "./db.config.js";
 
 dotenv.config();
 
 passport.use(googleStrategy);
+passport.use(naverStrategy);
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
 
@@ -122,12 +123,23 @@ app.get("/api/v1/stores/:storeId/missions", GetListStoreMissionController);
 app.get("/api/v1/members/:memberId/missions", GetListMemberMissionController);
 
 
-//passport 사용하기
+//passport GOOGLE 사용하기
 app.get("/oauth2/login/google", passport.authenticate("google"));
 app.get(
   "/oauth2/callback/google",
   passport.authenticate("google", {
     failureRedirect: "/oauth2/login/google",
+    failureMessage: true,
+  }),
+  (req, res) => res.redirect("/")
+);
+
+//passport NAVER 사용하기
+app.get("/oauth2/login/naver", passport.authenticate("naver"));
+app.get(
+  "/oauth2/callback/naver",
+  passport.authenticate("naver", {
+    failureRedirect: "/oauth2/login/naver",
     failureMessage: true,
   }),
   (req, res) => res.redirect("/")
