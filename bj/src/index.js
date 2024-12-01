@@ -4,6 +4,7 @@ import express from "express";
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
 import { handleUserSignUp,
+  UpdateMemberInfoController,
   InsertStoreController, 
   InsertReviewController, 
   InsertMissionController, 
@@ -93,6 +94,9 @@ app.get("/", (req, res) => {
 // 회원 가입 api
 app.post("/api/v1/users/signup", handleUserSignUp);
 
+// 회원 정보 수정하는 api
+app.post("/api/v1/users/change-info", UpdateMemberInfoController);
+
 // 가게를 생성하는 api
 app.post("/api/v1/store", InsertStoreController);
 
@@ -116,6 +120,7 @@ app.get("/api/v1/stores/:storeId/missions", GetListStoreMissionController);
 
 // 특정 멤버의 진행 중인 미션 목록 가져오는 api
 app.get("/api/v1/members/:memberId/missions", GetListMemberMissionController);
+
 
 //passport 사용하기
 app.get("/oauth2/login/google", passport.authenticate("google"));
