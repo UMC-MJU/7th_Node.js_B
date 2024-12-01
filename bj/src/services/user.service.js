@@ -10,7 +10,8 @@ import { DuplicateStoreMissionError,
     DuplicateStoreError,
     DuplicateMemberMissionError,
     DuplicateReviewError,
-    DuplicateRegionError, 
+    DuplicateRegionError,
+    DuplicateUpdateError, 
     DuplicateUserEmailError, 
     DuplicateUserError, 
     DuplicatePreferError } from "../errors.js";
@@ -19,6 +20,7 @@ import {
     getUser,
     getUserPreferencesByUserId,
     setPreference,
+    UpdateMember,
     addStore,
     addReview,
     addMission,
@@ -63,6 +65,25 @@ export const userSignUp = async (data) => {
     });
 };
 
+// 회원정보를 수정하는데 필요한 서비스
+export const UpdateMemberInfoService = async (data) => {
+    console.log("body12:", data)
+    const UpdateMemberName = await UpdateMember({
+        name : data.name,
+        gender : data.gender,
+        age : data.age,
+        address : data.address,
+        specaddress : data.specaddress,
+        phonenum : data.phonenum,
+        email : data.email,
+    })
+    if(UpdateMemberName == null){
+        throw new DuplicateUpdateError("가입 된적이 없는 데이터 입니다.", data);
+    }
+    return UpdateMemberName;
+}
+
+// 가게를 생성하는 서비스
 export const InsertStoreService = async (data) => {
     console.log("body12:", data)
     const joinStoreId = await addStore({

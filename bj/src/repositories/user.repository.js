@@ -69,6 +69,43 @@ export const getUserPreferencesByUserId = async (memberId) => {
   }
 };
 
+// 회원정보 수정하는 repository
+export const UpdateMember = async (data) => {
+  console.log("body13:", data)
+  try {
+    // 1. name과 email로 회원 존재 여부 확인
+    const existingMember = await prisma.member.findFirst({
+      where: {
+        name: data.name,
+        email: data.email,
+      },
+    });
+
+    if (!existingMember) {
+      throw new Error("해당 이름과 이메일로 등록된 사용자가 없습니다.");
+    }
+
+    // 2. 회원 정보 업데이트
+    const updatedMember = await prisma.member.update({
+      where: { id: existingMember.id },
+      data: {
+        gender: data.gender,
+        age: data.age,
+        address: data.address,
+        specAddress: data.specaddress,
+        phoneNum: data.phonenum,
+        updatedAt: new Date(), // Prisma가 자동으로 처리 가능
+      },
+    });
+
+    // 3. 업데이트된 회원 정보 반환
+    return updatedMember;
+  } catch (err) {
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+      );
+  }
+}
 //가게 생성 삽입
 export const addStore = async (data) => {
   console.log("body13:", data)

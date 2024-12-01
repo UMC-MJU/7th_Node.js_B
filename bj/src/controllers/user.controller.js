@@ -1,11 +1,13 @@
 import { StatusCodes } from "http-status-codes";
-import { bodyToUser, 
+import { bodyToUser,
+  UpdateMemberInfoDTO, 
   InsertStoreDTO, 
   InsertReviewDTO, 
   InsertMissionDTO ,
   InsertMemberMissionDTO
 } from "../dtos/user.dto.js";
-import { userSignUp, 
+import { userSignUp,
+  UpdateMemberInfoService, 
   InsertStoreService, 
   InsertReviewService, 
   InsertMissionService ,
@@ -149,7 +151,135 @@ export const handleUserSignUp = async (req, res, next) => {
   }
 };
 
-//  특정 지역의 가게를 생성하는 컨트롤러
+// 회원정보 수정하는 컨트롤러
+export const UpdateMemberInfoController = async(req,res,next) => {
+  /*
+  #swagger.summary = '회원 정보 수정 API';
+  #swagger.description = '회원의 정보를 수정합니다. 이름과 이메일을 기반으로 회원을 식별하여 나머지 정보를 업데이트합니다.';
+  #swagger.parameters['body'] = {
+    in: 'body',
+    required: true,
+    description: '수정할 회원 정보',
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', description: '회원 이름', example: '홍길동' },
+        gender: { type: 'string', description: '회원 성별 (남/여)', example: '남' },
+        age: { type: 'integer', description: '회원 나이', example: 30 },
+        address: { type: 'string', description: '회원 주소', example: '서울특별시 중구' },
+        spec_address: { type: 'string', description: '상세 주소', example: '을지로 12길 34-5' },
+        phone_number: { type: 'string', description: '회원 전화번호', example: '010-1234-5678' },
+        email: { type: 'string', description: '회원 이메일 주소', example: 'example@email.com' }
+      },
+      required: ['name', 'email']
+    }
+  };
+  #swagger.responses[200] = {
+    description: "회원 정보 수정 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "SUCCESS" },
+            error: { type: "object", nullable: true, example: null },
+            success: {
+              type: "object",
+              properties: {
+                id: { type: "integer", description: "회원 ID", example: 42 },
+                name: { type: "string", description: "회원 이름", example: "홍길동" },
+                gender: { type: "string", description: "회원 성별", example: "남" },
+                age: { type: "integer", description: "회원 나이", example: 30 },
+                address: { type: "string", description: "회원 주소", example: "서울특별시 중구" },
+                specAddress: { type: "string", description: "회원 상세 주소", example: "을지로 12길 34-5" },
+                phoneNum: { type: "string", description: "회원 전화번호", example: "010-1234-5678" },
+                email: { type: "string", description: "회원 이메일", example: "example@email.com" },
+                updatedAt: { type: "string", format: "date-time", description: "수정된 시간", example: "2024-11-24T12:00:00Z" }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[400] = {
+    description: "잘못된 요청 데이터",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "UM001" },
+                reason: { type: "string", description: "에러 이유", example: "필수 데이터가 누락되었습니다." },
+                data: { type: "object", nullable: true }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[404] = {
+    description: "회원 정보를 찾을 수 없는 경우",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "UM404" },
+                reason: { type: "string", description: "회원 정보를 찾을 수 없습니다." },
+                data: { type: "object", nullable: true }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+  #swagger.responses[500] = {
+    description: "서버 오류",
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            resultType: { type: "string", example: "FAIL" },
+            error: {
+              type: "object",
+              properties: {
+                errorCode: { type: "string", example: "UM500" },
+                reason: { type: "string", description: "서버 내부 오류" },
+                data: { type: "object", nullable: true }
+              }
+            },
+            success: { type: "object", nullable: true, example: null }
+          }
+        }
+      }
+    }
+  };
+*/
+
+  try{
+    console.log("회원 정보를 수정합니다.");
+    console.log("body:", req.body);
+    const member = await UpdateMemberInfoService(UpdateMemberInfoDTO(req.body));
+    res.status(StatusCodes.OK).success(member);
+  } catch(err){
+    return next(err);
+  }
+}
+// 특정 지역의 가게를 생성하는 컨트롤러
 export const InsertStoreController = async (req, res, next) => {
   /*
   #swagger.summary = '특정 지역의 가게 생성 API';

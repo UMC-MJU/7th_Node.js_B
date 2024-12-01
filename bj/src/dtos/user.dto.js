@@ -26,6 +26,19 @@ export const responseFromUser = ({user,preferences}) => {
     };
 };
 
+//회원정보를 수정하는 필요한 dto
+export const UpdateMemberInfoDTO = (body) => {
+    console.log("body11:", body)
+    return {
+        name : body.name,
+        gender : body.gender,
+        age : body.age,
+        address : body.address,
+        specaddress : body.spec_address,
+        phonenum : body.phone_number,
+        email : body.email,
+    };
+}
 // 가게 생성에 필요한 DTO
 export const InsertStoreDTO = (body) => {
     console.log("body11:", body)

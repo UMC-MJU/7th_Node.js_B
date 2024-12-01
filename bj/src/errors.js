@@ -97,3 +97,13 @@ export class DuplicateStoreMissionError extends Error {
         this.data = data;
     }
 }
+
+export class DuplicateUpdateError extends Error {
+    errorCode = "U011";
+
+    constructor(reason, data) {
+        super(reason);
+        this.reason = reason;
+        this.data = data;
+    }
+}
