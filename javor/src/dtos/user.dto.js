@@ -1,16 +1,16 @@
 export const bodyToUser = (body) => {
 
   return {
-    name: body.name,
-    gender: body.gender,
-    age: body.age,
-    address: body.address,
-    specAddress: body.specAddress,
-    phoneNum: body.phoneNum,
-    status: body.status,
+    name: body.name ?? null,
+    gender: body.gender ?? null,
+    age: body.age ?? null,
+    address: body.address ?? null,
+    specAddress: body.specAddress ?? null,
+    phoneNum: body.phoneNum ?? null,
+    status: body.status ?? null,
     email: body.email,
-    point: body.point,
-    preferences: body.preferences,
+    point: body.point ?? 0,
+    preferences: body.preferences ?? [],
   };
 };
 
