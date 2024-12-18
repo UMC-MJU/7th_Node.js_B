@@ -1,5 +1,5 @@
 import { responseFromUser, responseFromReviews, responseFromMissions} from "../dtos/user.dto.js";
-import { DuplicateStoreError, DuplicateUserEmailError, DuplicateUserError, DuplicatePreferError } from "../errors.js";
+import { DuplicateUpdateError, DuplicateStoreError, DuplicateUserEmailError, DuplicateUserError, DuplicatePreferError } from "../errors.js";
 import {
   addUser,
   getUser,
@@ -11,7 +11,8 @@ import {
   getAllStoreReviews,
   getAllUserReviews,
   getAllStoreMissions,
-  getAllUserMissions
+  getAllUserMissions,
+  setUpdateUser
 } from "../repositories/user.repositories.js";
 
 
@@ -123,4 +124,21 @@ export const listUserMissions = async (memberId, status,cursor) =>{
     throw new DuplicateUserError("존재하지 않는 미션입니다.", memberId);
   }
   return responseFromMissions(missions);
+}
+
+// 회원정보를 수정하는데 필요한 서비스
+export const updateUser = async (data) => {
+  const UpdateMemberName = await setUpdateUser({
+      name : data.name,
+      gender : data.gender,
+      age : data.age,
+      address : data.address,
+      specaddress : data.specaddress,
+      phonenum : data.phonenum,
+      email : data.email,
+  })
+  if(UpdateMemberName == null){
+      throw new DuplicateUpdateError("없는 유저 입니다.", data);
+  }
+  return UpdateMemberName;
 }
